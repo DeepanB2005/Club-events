@@ -1,8 +1,8 @@
-import navbar from "../components/navbar";
+import Navbar from "../components/navbar";
 function Home() {
     return (
-        <div className="bg-gray-100 min-h-screen">
-            {navbar()}
+        <div className="text-white font-ft bg-white dark:bg-blue-950 w-screen h-screen">
+            <Navbar/>
         </div>
     );
 }
