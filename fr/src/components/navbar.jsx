@@ -7,12 +7,12 @@ function Navbar()
                 <img src={i1} alt="React Logo" class="mr-2"></img>
                 <h1 class="text-3xl mt-1">CLUB-WEB</h1>
             </div>
-            <div class="flex ml-80 mr-40 max-md:mr-20 max-sm:mr-0 font-semibold text-white text-lg hover:text-gray-300 transition duration-200">
-                <a href='#' class="ml-6 mt-2 relative ml-6 mt- before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Features</a>
-                <a href="#" class="ml-[50px] mt-2 ">Clubs</a>
-                <a href="#" class="ml-[50px] mt-2">Events</a>
-                <a href="#" class="ml-[50px] mt-2">About us</a>
-                <button class="ml-[70px] px-4 py-1 bg-gradient-to-r from-[#7314f8] to-[#a60886] dark:from-[#ff006e] dark:to-[#8338ec] text-white rounded-lg hover:bg-gradient-to-t transition duration-300">
+            <div class="flex ml-80 mr-40 max-md:mr-20 max-sm:mr-0 font-semibold ">
+                <a href='#' class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-6 mb-0 mt-2 relative ml-6 mt-1 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Features</a>
+                <a href="#" class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[50px] mt-2 relative ml-6 mt-2 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Clubs</a>
+                <a href="#" class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[50px] mt-2 relative ml-6 mt-2 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Events</a>
+                <a href="#" class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[50px] mt-2 relative ml-6 mt-2 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">About us</a>
+                <button class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[70px] px-5 py-0 bg-gradient-to-r from-[#7314f8] to-[#a60886] dark:from-[#ff006e] dark:to-[#8338ec] text-white rounded-full hover:bg-gradient-to-t transition duration-300">
                 Login</button>
             </div>
         </div>
