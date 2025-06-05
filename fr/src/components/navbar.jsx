@@ -1,21 +1,48 @@
 import i1 from '../assets/react.svg';
-function Navbar()
-{
+
+function Navbar() {
     return (
-        <div class="flex p-4 bg-gradient-to-t from-[#95dcec] to-[#337aec] dark:bg-gradient-to-t dark:from-[#130acb] dark:to-[#1c0969] ">
-            <div class="flex font-semibold bg-gradient-to-t from-[#ffffff] to-red-400 dark:from-[#ed8ab5] dark:to-[#f21818] text-transparent bg-clip-text w-60 ml-40 max-md:ml-20 max-sm:ml-0">
-                <img src={i1} alt="React Logo" class="mr-2"></img>
-                <h1 class="text-3xl mt-1 ">CLUB-WEB</h1>
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-white/95 via-purple-50/95 to-blue-50/95 dark:from-gray-900/95 dark:via-purple-900/95 dark:to-blue-900/95 backdrop-blur-xl border-b border-gradient-to-r from-purple-200/50 to-blue-200/50">
+            
+            <div className="absolute inset-0 overflow-hidden pointer-events-none transition-all duration-500">
+                <div className="absolute top-4 left-1/2 w-2 h-2 bg-blue-400 dark:bg-blue-300 rounded-full animate-bounce opacity-70"></div>
+                <div className="absolute top-2 left-1/4 w-2 h-2 bg-purple-400 dark:bg-purple-300 rounded-full animate-float opacity-60"></div>
+                <div className="absolute top-6 left-7 w-2 h-2 bg-purple-400 dark:bg-purple-300 rounded-full animate-float opacity-60"></div>
+                <div className="absolute top-4 right-1/3 w-1 h-1 bg-blue-400 dark:bg-blue-300 rounded-full animate-bounce-subtle opacity-40"></div>
+                <div className="absolute top-1 left-2/3 w-1.5 h-1.5 bg-pink-400 dark:bg-pink-300 rounded-full animate-float opacity-50"></div>
+                <div className="absolute top-8 left-1/3 w-2.5 h-0.5 bg-pink-400 dark:bg-pink-300 rounded-full animate-float opacity-50"></div>
             </div>
-            <div class="flex ml-80 mr-40 max-md:mr-20 max-sm:mr-0 font-semibold ">
-                <a href='#' class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-6 mb-0 mt-2 relative ml-6 mt-1 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Features</a>
-                <a href="#" class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[50px] mt-2 relative ml-6 mt-2 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Clubs</a>
-                <a href="#" class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[50px] mt-2 relative ml-6 mt-2 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">Events</a>
-                <a href="#" class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[50px] mt-2 relative ml-6 mt-2 before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full">About us</a>
-                <button class="text-green-300 text-lg hover:text-green-500 transition duration-200 ml-[70px] px-5 py-0 bg-gradient-to-r from-[#7314f8] to-[#a60886] dark:from-[#ff006e] dark:to-[#8338ec] text-white rounded-full hover:bg-gradient-to-t transition duration-300">
-                Login</button>
+            
+            <div className="container mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+<div className="flex items-center ml-[130px]">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-all duration-500 shadow-lg hover:shadow-purple-300/50 dark:hover:shadow-purple-400/50 group-hover:scale-110">
+                <span className="text-white font-bold text-xl animate-glow">C</span>
             </div>
-        </div>
-    )
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-white">CLUB-WEB</h1>
+</div>
+                    <div className="hidden md:flex items-center space-x-8">
+                        <NavLink href="#" text="Features" />
+                        <NavLink href="#" text="Clubs" />
+                        <NavLink href="#" text="Events" />
+                        <NavLink href="#" text="About us" />
+                        <button className="px-6 py-2 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105">
+                            Login
+                        </button>
+                        </div>
+                        </div></div>
+            
+        </nav>
+    );
 }
+
+const NavLink = ({ href, text }) => (
+    <a
+        href={href}
+        className="text-gray-600 dark:text-gray-300 text-lg hover:text-green-500 transition duration-200 relative before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full"
+    >
+        {text}
+    </a>
+);
+
 export default Navbar;
