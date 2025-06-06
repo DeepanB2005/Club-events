@@ -15,14 +15,14 @@ function Hero() {
           Learn More
           </a>
     </div>
-    <div className="mt-[180px] ml-[100px] h-[450px] w-[480px] rounded-3xl p-8 shadow-lg shadow-gray-300 flex-row" >
+    <div className="mt-[180px] ml-[100px] h-[450px] w-[450px] rounded-3xl p-8 shadow-lg shadow-gray-300 flex-row" >
       <div className="flex">
-        <div className=" shadow w-40 h-40 mr-5 rounded-lg"></div>
-      <div className=" shadow w-40 h-40 rounded-lg"></div>
+        <div className=" shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
+      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
       </div>
-      <div className="flex">
-        <div className=" shadow w-40 h-40 mr-5 rounded-lg"></div>
-      <div className=" shadow w-40 h-40 rounded-lg"></div>
+      <div className="flex mt-10">
+        <div className=" shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
+      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
       </div>
     </div>
     
