@@ -17,15 +17,15 @@ function Hero() {
     </div>
     <div className="mt-[180px] ml-[100px] h-[450px] w-[450px] rounded-3xl p-8 shadow-lg shadow-gray-300 flex-row" >
       <div className="flex">
-        <div className=" shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
-      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
+        <div className=" shadow w-[170px] h-[170px] rounded-lg"></div>
+      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg"></div>
       </div>
       <div className="flex mt-10">
-        <div className=" shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
-      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg bg-red-400"></div>
+        <div className=" shadow w-[170px] h-[170px] rounded-lg "></div>
+      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg "></div>
       </div>
     </div>
-    
+    <div className="w-5 h-10 bg-gradient-to-t from-red-400 to-purple-300 absolute bottom-8 ml-[700px] animate-bounce rounded-3xl px-2 py-2"><p className="bg-lime-500 text-transparent">|</p></div>
     </div>
 
   );
