@@ -16,10 +16,10 @@ function Navbar() {
             <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
 <div className="flex items-center lg:ml-[130px] sm:ml-10">
-            <div className="shadow-md shadow-gray-800 mr-1 w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-all duration-500 shadow-lg hover:shadow-purple-300/50 dark:hover:shadow-purple-400/50 group-hover:scale-110">
+            <div className="shadow-md shadow-gray-800 dark:shadow-gray-700 mr-1 w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-all duration-500 shadow-lg hover:shadow-purple-300/50 dark:hover:shadow-purple-400/50 group-hover:scale-110">
                 <span className="text-white font-bold text-xl animate-glow">C</span>
             </div>
-                <h1 className="text-3xl font-bold bg-gradient-to-b from-red-500 to-black bg-clip-text text-transparent ">CLUB-WEB</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-b from-red-500 to-black bg-clip-text text-transparent dark:from red-500 dark:to-white">CLUB-WEB</h1>
 </div>
                     <div className="hidden md:flex items-center space-x-20    ">
                         <NavLink href="#" text="Features" />
