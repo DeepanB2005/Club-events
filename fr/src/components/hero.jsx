@@ -1,6 +1,6 @@
 function Hero() {
   return (
-    <div class="h-screen flex bg-gradient-to-t from-blue-50 to-blue-100 dark:bg-gradient-to-t dark:from-[#7b0acb] dark:to-[#47225b] ">       
+    <div class="h-screen flex bg-gradient-to-t from-blue-50 to-blue-100 dark:bg-gradient-to-t dark:from-[#0f051022] dark:to-[#7b0acb]  ">       
     <div className="hero ml-[200px] mt-60 max-md:ml-20 max-sm:ml-0 w-[600px]">
       <h1
         className="text-[3rem] font-extrabold leading-[1.2] mb-6 bg-gradient-to-r from-[#4361ee] to-[#f72585] bg-clip-text text-transparent"
