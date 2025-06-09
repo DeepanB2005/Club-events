@@ -2,7 +2,7 @@ import i1 from '../assets/react.svg';
 
 function Navbar() {
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent opacity-85 bg-gradient-to-r from-white/95 via-purple-50/75 to-blue-50/65 dark:from-black dark:via-purple-900/95 dark:to-black backdrop-blur-xl border-b border-gradient-to-r from-purple-200/50 to-blue-200/50">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent opacity-85 bg-gradient-to-r from-white/95 via-purple-50 to-blue-50 dark:from-black dark:via-purple-900/95 dark:to-black backdrop-blur-xl border-b border-gradient-to-r from-purple-200/50 to-blue-200/50">
             
             <div className="absolute inset-0 overflow-hidden pointer-events-none transition-all duration-500">
                 <div className="absolute top-4 left-1/2 w-2 h-2 bg-blue-400 dark:bg-blue-300 rounded-full animate-bounce opacity-70"></div>
