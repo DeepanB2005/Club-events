@@ -10,7 +10,8 @@ export default {
       {
         'dark':"url('/src/assets/bgdk.jpg')",
         'dark2':"url('/src/assets/bgdk2.jpg')",
-        'lit':"url('/src/assets/dark1.jpg')",
+        'lit':"url('/src/assets/dark1.webp')",
+        'lit1':"url('/src/assets/bgclr.jpg')",
       },
       fontFamily: {
         'ft':["times new roman","ft", "serif"],
