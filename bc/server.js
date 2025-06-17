@@ -8,6 +8,9 @@ connectDB();
 const app =express();
 const port = 3000;
 
+//json parse and request from fr
+app.use(express.json());
+
 app.use('/api/users', userRoutes);
 app.use('/api/clubs', clubRoutes);
 
