@@ -19,7 +19,6 @@ app.listen(port,(e)=>{
     else
     {    
     console.log();
-    console.log(`✨Server is running on http://localhost:${port}`);
-    console.log("vanakkam da mapla ☄️❤️‍🔥🧩");
+    console.log(`vanakkam da mapla ☄️❤️‍🔥🧩http://localhost:${port}`);
     }
 })
