@@ -9,8 +9,8 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    const user = new User({ username, email, password });
+    const { username, email, password,gender,dob,year,department,phoneNo } = req.body;
+    const user = new User({ username, email, password,gender,dob,year,department,phoneNo });
     await user.save();
     res.status(201).json(user);
   } catch (err) {
@@ -19,3 +19,5 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
+
