@@ -12,6 +12,8 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+
 // Create a new club
 router.post('/', async (req, res) => {
   try {
@@ -23,5 +25,6 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 module.exports = router;
