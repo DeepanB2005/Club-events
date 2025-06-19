@@ -24,7 +24,7 @@ passport.deserializeUser((obj, done) => done(null, obj));
 
 // Configure Google Strategy
 passport.use(new GoogleStrategy({
-    clientID: 'YOUR_GOOGLE_CLIENT_ID',
+    clientID: 829753005073-l9kam0mc2v6io2p5gj0gpu0msoc9i3k2.apps.googleusercontent.com,
     clientSecret: 'YOUR_GOOGLE_CLIENT_SECRET',
     callbackURL: '/auth/google/callback'
   },
@@ -42,7 +42,6 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    // Successful authentication
     res.redirect('/');
   }
 );
@@ -56,8 +55,7 @@ app.get('/logout', (req, res) => {
 app.get('/', (req, res) => {
   res.send(req.user ? `Hello, ${req.user.displayName}` : 'Not logged in');
 });
-
-// json parse and request from fr
+//-----------------------------------------------
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
