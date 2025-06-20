@@ -30,7 +30,7 @@ function Navbar() {
                         </div>
                         <input type='text' placeholder='    search' class="bg-blue-50 text-pink-300 rounded-2xl shadow-sm px-4 py-1 border-2 border-red-300 hover:py-2 transition-all duration-300"></input>
                         <button class="mr-[100px] px-6 py-1 shadow-md    shadow-gray-500 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105">
-                        <Link to="/login">Login</Link>
+                        <Link to="/Login">Login</Link>
                         </button>
 
                         </div></div>
