@@ -63,7 +63,7 @@ function Login() {
     try {
       console.log("Sending signup data:", signupForm);
       
-      const response = await fetch("http://localhost:5000/api/users", {
+      const response = await fetch("http://127.0.0.1:5000/api/users", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -74,6 +74,7 @@ function Login() {
       if (!response.ok) {
         const error = await response.json();
         alert(error.error || error.message || "Signup failed");
+        console.error("Signup error response:", error);
         return;
       }
 
@@ -97,6 +98,7 @@ function Login() {
       
     } catch (err) {
       console.error("Signup error:", err);
+      console.log("Signup error details:", { signupForm });
       alert("Signup failed: " + err.message);
     }
   };

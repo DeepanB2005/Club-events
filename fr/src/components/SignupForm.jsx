@@ -128,6 +128,7 @@ const SignupForm = ({
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
         >
           <option value="">Select department</option>
+          <option value="Computer Science">Artificial Intelligence</option>
           <option value="Computer Science">Computer Science</option>
           <option value="Information Technology">Information Technology</option>
           <option value="Electronics">Electronics</option>
