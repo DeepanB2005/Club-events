@@ -13,10 +13,15 @@ function Login() {
   });
 
   const [signupForm, setSignupForm] = useState({
-    fullName: "",
+    username: "",
+    rollNo: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    gender: "",
+    dob: "",
+    year: "",
+    department: "",
+    phoneNo: ""
   });
 
   const handleLoginChange = (e) => {
@@ -36,30 +41,62 @@ function Login() {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     // Add your login logic here
+    console.log("Login form data:", loginForm);
   };
 
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic form validation
+    if (signupForm.password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+
+    // Phone number validation (basic)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(signupForm.phoneNo)) {
+      alert("Please enter a valid 10-digit phone number");
+      return;
+    }
+
     try {
+      console.log("Sending signup data:", signupForm);
+      
       const response = await fetch("http://localhost:5000/api/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(signupForm),
       });
+
       if (!response.ok) {
         const error = await response.json();
-        alert(error.error || "Signup failed");
+        alert(error.error || error.message || "Signup failed");
         return;
       }
+
+      const result = await response.json();
       alert("Signup successful!");
+      
+      // Reset form and switch to login tab
       setActiveTab("login");
       setSignupForm({
-        fullName: "",
+        username: "",
+        rollNo: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        gender: "",
+        dob: "",
+        year: "",
+        department: "",
+        phoneNo: ""
       });
+      setShowPassword(false);
+      
     } catch (err) {
+      console.error("Signup error:", err);
       alert("Signup failed: " + err.message);
     }
   };
@@ -122,8 +159,6 @@ function Login() {
                 handleSignupSubmit={handleSignupSubmit}
                 showPassword={showPassword}
                 setShowPassword={setShowPassword}
-                showConfirmPassword={showConfirmPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
                 setActiveTab={setActiveTab}
               />
             )}
