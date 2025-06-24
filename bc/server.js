@@ -1,22 +1,41 @@
-const express =require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
-const app =express();
-const port = 3000;
+const express = require('express');
+const connectDB = require('./db');
+const userRoutes = require('./routes/users');
+const clubRoutes = require('./routes/clubs');
+const cors = require('cors');
+
+connectDB();
+
+const app = express();
+const port = 5000;
+
+// CORS middleware to allow frontend communication
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+//-----------------------------------------------
+app.get('/', (req, res) => {
+  res.send(req.user ? `Hello, ${req.user.displayName}` : 'Not logged in');
+});
+//-----------------------------------------------
+
+app.use('/api/users', userRoutes);
+app.use('/api/clubs', clubRoutes);
+
 app.listen(port,(e)=>{
-    if(e) {
+    if(e) 
+    {
         console.error("Error starting server:", e);
-        return;
-    }else{
-    console.log(`Server is running on http://localhost:${port}`);
-    console.log("vanakkam da mapla");
+    }
+    else
+    {    
+    console.log();
+    console.log(`vanakkam da mapla ☄️❤️‍🔥🧩http://localhost:${port}`);
     }
 })
-
-
-
-
-const mongoURI = process.env.MONGODB_URI;
-mongoose.connect(mongoURI)
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch(err => console.error('Connection error:', err));
