@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
+import { AnimatePresence, motion } from "framer-motion"
 
 function Login() {
   const [activeTab, setActiveTab] = useState("login");
@@ -104,17 +105,17 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-300 via-gray-100 to-gray-300 relative overflow-hidden flex items-center justify-center">
-      <div className="flex flex-col lg:flex-row min-h-[80vh] w-full max-w-6xl z-10 shadow-lg rounded-2xl overflow-hidden">
+      <div className="flex flex-col lg:flex-row h-[90vh] w-full max-w-6xl z-10 shadow-lg rounded-2xl overflow-hidden">
         {/* Left Side - Login/Signup Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center px-2 sm:px-5 py-5 bg-white bg-opacity-90">
-          <div className="w-full max-w-md space-y-2">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">WELCOME BACK</h1>
-              <p className="text-gray-600">Welcome back! Please enter your details.</p>
+          <div className="w-full max-w-md mx-auto">
+          <div className=" space-y-2 ">
+            <div class="flex-1 items-center">
+              <h1 className="mt-5 text-4xl font-bold bg-gradient-to-b from-red-600 via-red-500 to-black bg-clip-text text-transparent mb-02">WELCOME BACK</h1>
             </div>
-            <div className="flex bg-gray-100 rounded-xl p-1 mb-2">
+            <div className="flex bg-gray-100 rounded-xl p-1 ">
               <button
-                className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-300 ${
+                className={`flex-1  py-3 px-4 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === "login"
                     ? "bg-red-500 text-white shadow-sm"
                     : "text-gray-500 hover:text-gray-700"
@@ -143,27 +144,51 @@ function Login() {
               >
                 Sign Up
               </button>
+              </div>
             </div>
-            {activeTab === "login" ? (
-              <LoginForm
-                loginForm={loginForm}
-                handleLoginChange={handleLoginChange}
-                handleLoginSubmit={handleLoginSubmit}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                setActiveTab={setActiveTab}
-              />
-            ) : (
-              <SignupForm
-                signupForm={signupForm}
-                handleSignupChange={handleSignupChange}
-                handleSignupSubmit={handleSignupSubmit}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                setActiveTab={setActiveTab}
-              />
-            )}
+            </div>
+
+            <div class="w-full">
+            <div>
+            <AnimatePresence mode="wait">
+              {activeTab === "login" ? (
+                <motion.div
+                  key="login"
+                  initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <LoginForm
+                    loginForm={loginForm}
+                    handleLoginChange={handleLoginChange}
+                    handleLoginSubmit={handleLoginSubmit}
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
+                    setActiveTab={setActiveTab}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="signup"
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <SignupForm
+                    signupForm={signupForm}
+                    handleSignupChange={handleSignupChange}
+                    handleSignupSubmit={handleSignupSubmit}
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
+                    setActiveTab={setActiveTab}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+        </div>
         </div>
         {/* Right Side - Illustration */}
         <div className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
