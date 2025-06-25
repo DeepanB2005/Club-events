@@ -40,7 +40,6 @@ function Login() {
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here
     console.log("Login form data:", loginForm);
   };
 
