@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
   try {
     console.log('Received signup data:', req.body);
     
-    const { username, rollNo, roll, email, password, gender, dob, year, department, phoneNo } = req.body;
+    const { username, rollNo, role, email, password, gender, dob, year, department, phoneNo } = req.body;
     
     // Check if user already exists
     const existingUser = await User.findOne({ 
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
     const user = new User({ 
       username, 
       rollNo: rollNo.toUpperCase(), 
-      roll: roll.toLowerCase(),
+      role,
       email: email.toLowerCase(), 
       password, 
       gender: gender.toLowerCase(), 

@@ -1,22 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  Home, 
-  BarChart3, 
-  Users, 
-  Settings, 
-  Calendar, 
-  MessageSquare, 
-  ChevronRight,
-  User,
-  LogOut,
-  Building2,
-  PlusCircle,
-  Edit,
-  UserPlus,
-  UserCog,
-  Crown,
-  Eye
+import {
+  X, Home, BarChart3, Users, Settings, Calendar, MessageSquare, ChevronRight,
+  User, LogOut, Building2, PlusCircle, Edit, UserPlus, UserCog, Crown, Eye
 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
@@ -26,14 +11,28 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Get user from localStorage
     const storedUser = localStorage.getItem('user');
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      // Fetch latest user data from backend using email
+      fetch(`http://127.0.0.1:5000/api/users?email=${encodeURIComponent(parsedUser.email)}`)
+        .then(res => res.json())
+        .then(data => {
+          // If backend returns an array, find the user by email
+          let backendUser = Array.isArray(data)
+            ? data.find(u => u.email === parsedUser.email)
+            : data;
+          if (backendUser) setUser(backendUser);
+          else setUser(parsedUser); // fallback
+        })
+        .catch(() => setUser(parsedUser)); // fallback on error
+    }
   }, []);
 
   // Get menu items based on user role
   const getMenuItems = () => {
     const userRole = user?.role || 'student'; // Default to student if no role found
-
     switch (userRole) {
       case 'admin':
         return [
@@ -44,7 +43,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           { id: 'manage-users', label: 'Manage Users', icon: Users, color: 'text-red-500' },
           { id: 'settings', label: 'Settings', icon: Settings, color: 'text-gray-500' },
         ];
-      
       case 'leader':
         return [
           { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-500' },
@@ -55,7 +53,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           { id: 'join-requests', label: 'Join Requests', icon: UserPlus, color: 'text-indigo-500' },
           { id: 'manage-members', label: 'Manage Members', icon: UserCog, color: 'text-red-500' },
         ];
-      
       case 'student':
       default:
         return [
@@ -87,7 +84,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const roleInfo = getRoleInfo();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.clear(); // Clear all local storage
     navigate("/");
   };
 
@@ -95,12 +92,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     <>
       {/* Mobile Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={toggleSidebar}
         />
       )}
-      
+
       {/* Sidebar */}
       <div className={`
         fixed top-0 left-0 h-full w-64 bg-gradient-to-t from-violet-200  dark:bg-gradient-to-b dark:from-black dark:to-yellow-800 shadow-xl z-50 transform transition-transform duration-300 ease-in-out
@@ -144,13 +141,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   }
                 `}
               >
-                <Icon 
-                  size={20} 
-                  className={`${activeItem === item.id ? item.color : 'text-gray-500 dark:text-gray-400'}`} 
+                <Icon
+                  size={20}
+                  className={`${activeItem === item.id ? item.color : 'text-gray-500 dark:text-gray-400'}`}
                 />
                 <span className={`font-medium ${
-                  activeItem === item.id 
-                    ? 'text-gray-900 dark:text-white' 
+                  activeItem === item.id
+                    ? 'text-gray-900 dark:text-white'
                     : 'text-gray-600 dark:text-gray-300'
                 }`}>
                   {item.label}
