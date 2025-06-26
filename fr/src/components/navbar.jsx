@@ -1,17 +1,40 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 
 function Navbar() {
     const [user, setUser] = useState(null);
+    const [showNavbar, setShowNavbar] = useState(true);
+    const lastScrollY = useRef(window.scrollY);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check localStorage for user info
+        //sae in local storage
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY < 10) {
+                setShowNavbar(true);
+                lastScrollY.current = window.scrollY;
+                return;
+            }
+            if (window.scrollY > lastScrollY.current) {
+                // Scrol down
+                setShowNavbar(false);
+            } else {
+                // Scrollingto up
+                setShowNavbar(true);
+            }
+            lastScrollY.current = window.scrollY;
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const handleUserClick = () => {
@@ -19,7 +42,11 @@ function Navbar() {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent opacity-85 bg-gradient-to-r from-white/95 via-purple-50 to-blue-50 dark:from-black dark:via-gray-800 dark:to-black backdrop-blur-xl border-b border-gradient-to-r from-purple-200/50 to-blue-200/50">
+        <nav
+            className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
+                showNavbar ? 'translate-y-0' : '-translate-y-full'
+            } bg-transparent opacity-85 bg-gradient-to-r from-white/95 via-purple-100 to-blue-50 dark:from-black dark:via-gray-800 dark:to-black backdrop-blur-xl border-b border-gradient-to-r from-purple-200/50 to-blue-200/50`}
+        >
             
             <div className="absolute inset-0 overflow-hidden pointer-events-none transition-all duration-500">
                 <div className="absolute top-4 left-1/2 w-2 h-2 bg-blue-400 dark:bg-blue-300 rounded-full animate-bounce opacity-70"></div>

@@ -16,11 +16,11 @@ email,pass,captcha
 
 admin dashboard =>
 
-greeting,manage clubs ,manage events , create clubs , manage users
+    greeting,manage clubs ,manage events , create clubs , manage users
 
 club leader dashboard =>
 
-greetings,club profile,update club, create events,update events,join requests ,manage members
+    greetings,club profile,update club, create events,update events,join requests ,manage members
 
 student dashboard =>
-greetings,clubs,events,all clubs,my profile
+    greetings,clubs,events,all clubs,my profile
