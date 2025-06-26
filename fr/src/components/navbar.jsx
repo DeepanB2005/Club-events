@@ -1,7 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 
 function Navbar() {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check localStorage for user info
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    const handleUserClick = () => {
+        navigate("/Dashboard"); // Change to your dashboard route
+    };
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent opacity-85 bg-gradient-to-r from-white/95 via-purple-50 to-blue-50 dark:from-black dark:via-gray-800 dark:to-black backdrop-blur-xl border-b border-gradient-to-r from-purple-200/50 to-blue-200/50">
             
@@ -15,25 +31,34 @@ function Navbar() {
             </div>
             
             <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-<div className="flex items-center lg:ml-[130px] sm:ml-10">
-            <div className="shadow-md shadow-gray-800 dark:shadow-gray-700 mr-1 w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-all duration-500 shadow-lg hover:shadow-purple-300/50 dark:hover:shadow-purple-400/50 group-hover:scale-110">
-                <span className="text-white font-bold text-xl animate-glow">C</span>
-            </div>
-                <h1 className="text-3xl font-bold bg-gradient-to-b from-red-500 to-black bg-clip-text text-transparent dark:from red-500 dark:to-white">CLUB-WEB</h1>
-</div>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center lg:ml-[130px] sm:ml-10">
+                        <div className="shadow-md shadow-gray-800 dark:shadow-gray-700 mr-1 w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-all duration-500 shadow-lg hover:shadow-purple-300/50 dark:hover:shadow-purple-400/50 group-hover:scale-110">
+                            <span className="text-white font-bold text-xl animate-glow">C</span>
+                        </div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-b from-red-500 to-black bg-clip-text text-transparent dark:from red-500 dark:to-white">CLUB-WEB</h1>
+                    </div>
                     <div className="hidden md:flex items-center space-x-20    ">
                         <NavLink href="#" text="Features" />
                         <NavLink href="#" text="Clubs" />
                         <NavLink href="#" text="Events" />
                         <NavLink href="#" text="About us" />
-                        </div>
-                        <input type='text' placeholder='    search' class="bg-blue-50 text-pink-300 rounded-2xl shadow-sm px-4 py-1 border-2 border-red-300 hover:py-2 transition-all duration-300"></input>
-                        <button class="mr-[100px] px-6 py-1 shadow-md    shadow-gray-500 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105">
-                        <Link to="/Login">Login</Link>
+                    </div>
+                    <input type='text' placeholder='    search' className="bg-blue-50 text-pink-300 rounded-2xl shadow-sm px-4 py-1 border-2 border-red-300 hover:py-2 transition-all duration-300"></input>
+                    {user ? (
+                        <button
+                            className="mr-[100px] px-6 py-1 shadow-md shadow-gray-500 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105"
+                            onClick={handleUserClick}
+                        >
+                            {user.username || user.email}
                         </button>
-
-                        </div></div>
+                    ) : (
+                        <button className="mr-[100px] px-6 py-1 shadow-md shadow-gray-500 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105">
+                            <Link to="/Login">Login</Link>
+                        </button>
+                    )}
+                </div>
+            </div>
             
         </nav>
     );

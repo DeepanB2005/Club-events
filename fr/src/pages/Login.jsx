@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 import { AnimatePresence, motion } from "framer-motion"
@@ -24,6 +25,8 @@ function Login() {
     department: "",
     phoneNo: ""
   });
+
+  const navigate = useNavigate(); // Add this line
 
   const handleLoginChange = (e) => {
     setLoginForm({
@@ -64,7 +67,9 @@ function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(loginForm),
+        
       });
+      console.log("Sending login data:", loginForm);
 
       if (!response.ok) {
         const error = await response.json();
@@ -74,22 +79,13 @@ function Login() {
       }
 
       const result = await response.json();
-      console.log("Login successful:", result);
       alert("Login successful!");
-      
-      // Store user data in localStorage (or you can use context/state management)
       localStorage.setItem('user', JSON.stringify(result.user));
-      
-      // Reset form
-      setLoginForm({
-        email: "",
-        password: ""
-      });
+      setLoginForm({ email: "", password: "" });
       setShowPassword(false);
-      
-      // Redirect to dashboard or home page
-      // window.location.href = '/dashboard'; // or use React Router
-      
+
+      // Redirect to home page
+      navigate("/"); // <--- Redirect after login
     } catch (err) {
       console.error("Login error:", err);
       alert("Login failed: " + err.message);
@@ -139,9 +135,6 @@ function Login() {
 
       const result = await response.json();
       alert("Signup successful!");
-      
-      // Reset form and switch to login tab
-      setActiveTab("login");
       setSignupForm({
         username: "",
         rollNo: "",
@@ -154,7 +147,9 @@ function Login() {
         phoneNo: ""
       });
       setShowPassword(false);
-      
+
+      // Redirect to home page
+      navigate("/"); // <--- Redirect after signup
     } catch (err) {
       console.error("Signup error:", err);
       console.log("Signup error details:", { signupForm });
@@ -257,7 +252,7 @@ function Login() {
           <div className="absolute top-10 right-10 text-9xl font-black text-gray-200 opacity-20 select-none">
             Go
           </div>
-          <div className="absolute top-1/2 left-10 space-y-4 animate-bounce">
+          <div className="absolute top-1/2 left-10 space-y-4">
             <div className="w-60 h-60 bg-red-300 rounded opacity-60 animate-bounce"></div>
             <div className="w-40 h-10 bg-red-300 rounded opacity-40"></div>
             <div className="w-20 h-5 bg-red-300 rounded opacity-20"></div>

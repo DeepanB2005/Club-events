@@ -1,9 +1,12 @@
-function dashboard() {
+import Sidebar from '../components/sidebar'
+
+function Dashboard() {
   return (
-    <div className="dashboard">
-      <h1>Dashboard</h1>
-      <p>Welcome to your dashboard!</p>
-      {/* Add more dashboard content here */}
+    <div>
+      <div className="Dashboard bg-red-300 ">
+        <Sidebar/><h1>vanakkam</h1>
+      </div>
     </div>
   );
 }
+export default Dashboard;

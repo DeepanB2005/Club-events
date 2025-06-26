@@ -10,6 +10,10 @@ user name ,email,pass,conform pass,gender,dob,year,department,phone no,
 login => 
 email,pass,captcha
 
+
+
+
+
 admin dashboard =>
 
 greeting,manage clubs ,manage events , create clubs , manage users
