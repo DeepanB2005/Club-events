@@ -84,7 +84,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const roleInfo = getRoleInfo();
 
   const handleLogout = () => {
-    localStorage.clear(); // Clear all local storage
+    localStorage.removeItem("user");
+    // localStorage.clear(); // Clear all local storage
     navigate("/");
   };
 

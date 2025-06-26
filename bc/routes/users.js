@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
     const user = new User({ 
       username, 
       rollNo: rollNo.toUpperCase(), 
-      role,
+      role: role || 'student', // Default role to student if not provided
       email: email.toLowerCase(), 
       password, 
       gender: gender.toLowerCase(), 
