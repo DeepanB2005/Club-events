@@ -24,7 +24,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             ? data.find(u => u.email === parsedUser.email)
             : data;
           if (backendUser) setUser(backendUser);
-          else setUser(parsedUser); // fallback
+          else setUser(parsedUser);
         })
         .catch(() => setUser(parsedUser)); // fallback on error
     }
@@ -91,7 +91,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/*for mobile  dimention*/}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"

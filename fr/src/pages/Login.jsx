@@ -162,7 +162,7 @@ function Login() {
     <div className="min-h-screen bg-gradient-to-br from-gray-300 via-gray-100 to-gray-300 relative overflow-hidden flex items-center justify-center">
       <div className="flex flex-col lg:flex-row h-[90vh] w-full max-w-6xl z-10 shadow-lg rounded-2xl overflow-hidden">
         {/* Left Side - Login/Signup Form */}
-        <div className="w-full lg:w-1/2 flex flex-col px-2 sm:px-5 py-5 bg-white bg-opacity-90">
+        <div className="w-full lg:w-1/2 flex flex-col px-2 sm:px-5 py-5 bg-white dark:bg-black bg-opacity-90">
           {/* Fixed Header Section */}
           <div className="w-full max-w-md mx-auto mb-6">
             <div className="text-center mb-4">
@@ -253,6 +253,8 @@ function Login() {
           <div className="absolute top-10 right-10 text-9xl font-black text-gray-200 opacity-20 select-none">
             Go
           </div>
+          <div class="w-20 h-20 bg-gradient-to-t from-red-400 to bg-purple-400 animate-spin "></div>
+
           <div className="absolute top-1/2 left-10 space-y-4">
             <div className="w-60 h-60 bg-red-300 rounded opacity-60 animate-bounce"></div>
             <div className="w-40 h-10 bg-red-300 rounded opacity-40"></div>
