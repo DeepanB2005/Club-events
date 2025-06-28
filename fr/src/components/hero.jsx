@@ -1,4 +1,23 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 function Hero() {
+
+  const [user, setUser] = useState(null);
+      const [showNavbar, setShowNavbar] = useState(true);
+  
+      const navigate = useNavigate();
+  
+      useEffect(() => {
+          //sae in local storage
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+              setUser(JSON.parse(storedUser));
+          }
+      }, []);
+  const handleUserClick = () => {
+        navigate("/Dashboard"); // Change to your dashboard route
+    };
+
   return (
     <div class="h-screen flex ">       
     <div className="hero ml-[200px] mt-60 max-md:ml-20 max-sm:ml-0 w-[600px]">
@@ -8,22 +27,24 @@ function Hero() {
         Manage Your Clubs With Efficiency
       </h1>
       <p class="text-[17px] text-gray-500">ClubWeb is a comprehensive solution for managing memberships, events, finances, and communications - all in one powerful platform.</p>
-        <button className="shadow-md  shadow-gray-600 mt-8 px-6 py-2 bg-gradient-to-r from-[#4361ee] to-[#f72585] text-white rounded-full hover:text-green-400 hover:bg-gradient-to-l from-blue-600 hover:to-pink-500 hover:shadow-purple-900 hover:shadow-lg  transition duration-300">
-          Get Started
-          </button>
+        {user ? (
+                        <button
+                            className="mr-[100px] px-6 py-1 shadow-md shadow-gray-500 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105"
+                            onClick={handleUserClick}
+                        >
+                            {user.username || user.email}
+                        </button>
+                    ) : (
+                        <button className="mr-[100px] px-6 py-1 mt-10 shadow-md shadow-gray-500 text-white text-lg font-semibold bg-gradient-to-r from-[#7314f8] to-[#a60886] hover:from-[#8324ff] hover:to-[#b90995] rounded-full transition duration-300 transform hover:scale-105">
+                            <Link to="/Login">Get Started</Link>
+                        </button>
+                    )}
           <a className=" px-6 py-2  text-gray-400 rounded-full hover:text-green-300 ">
           Learn More
           </a>
     </div>
     <div className="mt-[180px] ml-[100px] h-[450px] w-[450px] rounded-3xl p-8 shadow-2xl shadow-gray-500 flex-row" >
-      <div className="flex">
-        <div className=" shadow w-[170px] h-[170px] rounded-lg p-4 dark:shadow-gray-500"><h1>vanakkam</h1></div>
-      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg dark:shadow-gray-500 "></div>
-      </div>
-      <div className="flex mt-10">
-        <div className=" shadow w-[170px] h-[170px] rounded-lg dark:shadow-gray-500"></div>
-      <div className="ml-10 shadow w-[170px] h-[170px] rounded-lg dark:shadow-gray-500"></div>
-      </div>
+      
     </div>
     <div className="w-5 h-10 bg-gradient-to-t from-red-400 to-purple-300 absolute bottom-8 ml-[700px] animate-bounce rounded-3xl px-2 py-2"><p className="bg-lime-500 text-transparent">|</p></div>
     </div>

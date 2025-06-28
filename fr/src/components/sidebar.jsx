@@ -11,7 +11,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get user from localStorage
+    // Get user from localtorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
@@ -37,9 +37,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       case 'admin':
         return [
           { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-500' },
+          { id: 'create-clubs', label: 'Create Clubs', icon: PlusCircle, color: 'text-purple-500' },
           { id: 'manage-clubs', label: 'Manage Clubs', icon: Building2, color: 'text-green-500' },
           { id: 'manage-events', label: 'Manage Events', icon: Calendar, color: 'text-orange-500' },
-          { id: 'create-clubs', label: 'Create Clubs', icon: PlusCircle, color: 'text-purple-500' },
           { id: 'manage-users', label: 'Manage Users', icon: Users, color: 'text-red-500' },
           { id: 'settings', label: 'Settings', icon: Settings, color: 'text-gray-500' },
         ];
@@ -101,7 +101,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full w-64 bg-gradient-to-t from-violet-200  dark:bg-gradient-to-b dark:from-black dark:to-yellow-800 shadow-xl z-50 transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 h-full w-64 bg-gradient-to-t from-violet-300  dark:bg-gradient-to-b dark:from-black dark:to-yellow-800 shadow-xl z-50 transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:relative lg:translate-x-0 lg:z-auto
       `}>
