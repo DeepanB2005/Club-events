@@ -5,28 +5,24 @@ import {
 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
-  const [activeItem, setActiveItem] = useState('dashboard');
+const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get user from localtorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      // Fetch latest user data from backend using email
       fetch(`http://127.0.0.1:5000/api/users?email=${encodeURIComponent(parsedUser.email)}`)
         .then(res => res.json())
         .then(data => {
-          // If backend returns an array, find the user by email
           let backendUser = Array.isArray(data)
             ? data.find(u => u.email === parsedUser.email)
             : data;
           if (backendUser) setUser(backendUser);
           else setUser(parsedUser);
         })
-        .catch(() => setUser(parsedUser)); // fallback on error
+        .catch(() => setUser(parsedUser)); 
     }
   }, []);
 
@@ -133,10 +129,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveItem(item.id)}
+                onClick={() => setActiveMenu(item.id)}
                 className={`
                   w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
-                  ${activeItem === item.id
+                  ${activeMenu === item.id
                     ? 'bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-l-4 border-purple-500'
                     : 'hover:bg-gray-50 dark:hover:bg-gray-800'
                   }
@@ -144,16 +140,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               >
                 <Icon
                   size={20}
-                  className={`${activeItem === item.id ? item.color : 'text-gray-500 dark:text-gray-400'}`}
+                  className={`${activeMenu === item.id ? item.color : 'text-gray-500 dark:text-gray-400'}`}
                 />
                 <span className={`font-medium ${
-                  activeItem === item.id
+                  activeMenu === item.id
                     ? 'text-gray-900 dark:text-white'
                     : 'text-gray-600 dark:text-gray-300'
                 }`}>
                   {item.label}
                 </span>
-                {activeItem === item.id && (
+                {activeMenu === item.id && (
                   <ChevronRight size={16} className="ml-auto text-blue-500" />
                 )}
               </button>
