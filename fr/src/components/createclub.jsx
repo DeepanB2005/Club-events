@@ -11,14 +11,34 @@ function CreateClub() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
-  const [users, setUsers] = useState([]); // <-- Add this state
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [usersError, setUsersError] = useState('');
 
   // Fetch users on mount
   useEffect(() => {
-    fetch('/api/users')
-      .then(res => res.json())
-      .then(data => setUsers(data))
-      .catch(() => setUsers([]));
+    const fetchUsers = async () => {
+      try {
+        setLoadingUsers(true);
+        const response = await fetch('http://localhost:5000/api/users');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch users');
+        }
+        
+        const data = await response.json();
+        setUsers(data);
+        setUsersError('');
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        setUsersError('Failed to load users');
+        setUsers([]);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const handleInputChange = (e) => {
@@ -92,7 +112,7 @@ function CreateClub() {
     }
     
     if (!formData.leader.trim()) {
-      newErrors.leader = 'Leader name is required';
+      newErrors.leader = 'Leader selection is required';
     }
 
     setErrors(newErrors);
@@ -147,7 +167,7 @@ function CreateClub() {
   };
 
   return (
-    <div className="min-h-screen  py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -244,35 +264,64 @@ function CreateClub() {
                     )}
                   </div>
 
-                  {/* Leader Name */}
+                  {/* Leader Selection */}
                   <div>
                     <label htmlFor="leader" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                       Club Leader *
                     </label>
-                    <select
-                      id="leader"
-                      name="leader"
-                      value={formData.leader}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border-2 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:bg-gray-700/50 dark:text-white ${
-                        errors.leader 
-                          ? 'border-red-500 focus:border-red-500' 
-                          : 'border-gray-200 dark:border-gray-600 focus:border-blue-500'
-                      }`}
-                    >
-                      <option value="">Select a leader</option>
-                      {users.map(user => (
-                        <option key={user._id} value={user.username}>
-                          {user.username} ({user.email})
+                    
+                    {loadingUsers ? (
+                      <div className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700/50 flex items-center justify-center">
+                        <svg className="animate-spin h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="text-gray-500 text-sm">Loading users...</span>
+                      </div>
+                    ) : usersError ? (
+                      <div className="w-full p-3 border-2 border-red-300 rounded-xl bg-red-50 dark:bg-red-900/20">
+                        <p className="text-red-600 text-sm flex items-center">
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {usersError}
+                        </p>
+                      </div>
+                    ) : (
+                      <select
+                        id="leader"
+                        name="leader"
+                        value={formData.leader}
+                        onChange={handleInputChange}
+                        className={`w-full p-3 border-2 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:bg-gray-700/50 dark:text-white ${
+                          errors.leader 
+                            ? 'border-red-500 focus:border-red-500' 
+                            : 'border-gray-200 dark:border-gray-600 focus:border-blue-500'
+                        }`}
+                      >
+                        <option value="">
+                          {users.length === 0 ? 'No users available' : 'Select a leader'}
                         </option>
-                      ))}
-                    </select>
+                        {users.map(user => (
+                          <option key={user._id} value={user.username}>
+                            {user.username} ({user.rollNo}) - {user.email}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    
                     {errors.leader && (
                       <p className="text-red-500 text-xs flex items-center mt-1">
                         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {errors.leader}
+                      </p>
+                    )}
+                    
+                    {users.length > 0 && !loadingUsers && !usersError && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        {users.length} user{users.length !== 1 ? 's' : ''} available
                       </p>
                     )}
                   </div>
@@ -291,6 +340,7 @@ function CreateClub() {
                       value={formData.description}
                       onChange={handleInputChange}
                       rows={8}
+                      maxLength={500}
                       className={`w-full p-3 border-2 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:bg-gray-700/50 dark:text-white resize-none flex-1 ${
                         errors.description 
                           ? 'border-red-500 focus:border-red-500' 
@@ -334,9 +384,9 @@ function CreateClub() {
             <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-600">
               <button
                 type="submit"
-                disabled={isLoading || isSuccess}
+                disabled={isLoading || isSuccess || loadingUsers}
                 className={`w-full py-3 px-6 rounded-xl font-semibold text-white transition-all duration-300 transform ${
-                  isLoading || isSuccess
+                  isLoading || isSuccess || loadingUsers
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-[#4361ee] to-[#f72585] hover:from-[#5a7bff] hover:to-[#ff4c9c] hover:scale-[1.01] hover:shadow-lg active:scale-[0.99]'
                 }`}
@@ -356,6 +406,14 @@ function CreateClub() {
                     </svg>
                     Club Created!
                   </div>
+                ) : loadingUsers ? (
+                  <div className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading Users...
+                  </div>
                 ) : (
                   <div className="flex items-center justify-center">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,8 +426,6 @@ function CreateClub() {
             </div>
           </form>
         </div>
-
-        
       </div>
     </div>
   );
