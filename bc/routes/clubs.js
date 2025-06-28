@@ -17,8 +17,8 @@ router.get('/', async (req, res) => {
 // Create a new club
 router.post('/', async (req, res) => {
   try {
-    const { name, description, members } = req.body;
-    const club = new Club({ name, description, members });
+    const { name, description, members, profilePhoto } = req.body;
+    const club = new Club({ name, description, members, profilePhoto });
     await club.save();
     res.status(201).json(club);
   } catch (err) {
