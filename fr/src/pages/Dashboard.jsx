@@ -11,12 +11,10 @@ const Dashboard = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Render the main content based on activeMenu
   const renderContent = () => {
     switch (activeMenu) {
       case 'create-clubs':
         return <Createclub />;
-      // Add more cases for other menu items if needed
       default:
         return (
           <div className="flex flex-col items-center justify-center w-full h-full">
@@ -39,7 +37,6 @@ const Dashboard = () => {
         className="h-10 w-10 lg:hidden text-white p-2 rounded-lg bg-gray-800 dark:hover:bg-gray-700"
       >|||</button>
       <div className="flex-1 flex flex-col">
-        <div className="flex h-16 border-b border-gray-300 dark:border-yellow-900 items-center justify-between px-4"></div>
         <div className="flex-1 overflow-auto">{renderContent()}</div>
       </div>
     </div>
