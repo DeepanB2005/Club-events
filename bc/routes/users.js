@@ -25,6 +25,16 @@ router.get('/rollNo/:rollNo', async (req, res) => {
   }
 });
 
+// filepath: bc/routes/users.js
+router.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Create new user (signup)
 router.post('/', async (req, res) => {
   try {

@@ -1,4 +1,71 @@
 import {
+  Users,
+  CalendarCheck,
+  FileText,
+  BellRing,
+  ClipboardList,
+  BadgeCheck,
+  UserCircle,
+  ShieldCheck,
+  MessageCircle,
+  Settings,
+  Trophy,
+  Building2,
+} from 'lucide-react';
+
+
+<div className="grid grid-cols-3 gap-4 text-center">
+  <div>
+    <Users color="#3b82f6" size={36} />
+    <p className="text-sm mt-1">Members</p>
+  </div>
+  <div>
+    <CalendarCheck color="#10b981" size={36} />
+    <p className="text-sm mt-1">Events</p>
+  </div>
+  <div>
+    <FileText color="#f59e0b" size={36} />
+    <p className="text-sm mt-1">Documents</p>
+  </div>
+  <div>
+    <BellRing color="#ef4444" size={36} />
+    <p className="text-sm mt-1">Announcements</p>
+  </div>
+  <div>
+    <ClipboardList color="#8b5cf6" size={36} />
+    <p className="text-sm mt-1">Tasks</p>
+  </div>
+  <div>
+    <BadgeCheck color="#14b8a6" size={36} />
+    <p className="text-sm mt-1">Certificates</p>
+  </div>
+  <div>
+    <UserCircle color="#f97316" size={36} />
+    <p className="text-sm mt-1">Profile</p>
+  </div>
+  <div>
+    <ShieldCheck color="#22c55e" size={36} />
+    <p className="text-sm mt-1">Roles</p>
+  </div>
+  <div>
+    <MessageCircle color="#6366f1" size={36} />
+    <p className="text-sm mt-1">Chat</p>
+  </div>
+  <div>
+    <Settings color="#64748b" size={36} />
+    <p className="text-sm mt-1">Settings</p>
+  </div>
+  <div>
+    <Trophy color="#eab308" size={36} />
+    <p className="text-sm mt-1">Achievements</p>
+  </div>
+  <div>
+    <Building2 color="#6b7280" size={36} />
+    <p className="text-sm mt-1">Clubs</p>
+  </div>
+</div>
+
+import {
   MdGroups,
   MdEventAvailable,
   MdAnnouncement,
