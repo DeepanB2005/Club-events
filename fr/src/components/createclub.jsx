@@ -1,40 +1,15 @@
-import {
-  MdGroups,
-  MdEventAvailable,
-  MdAnnouncement,
-  MdWorkspacePremium,
-  MdLeaderboard,
-  MdEmojiEvents,
-  MdAdminPanelSettings,
-} from "react-icons/md";
+
 import { FaUserGraduate, FaChalkboardTeacher, FaTasks } from "react-icons/fa";
-import { GiDiscussion, GiPartyPopper, GiSettingsKnobs } from "react-icons/gi";
 
-export default function Createclub() {
-  const icons = [
-    { icon: <MdGroups size={50} color="#4f46e5" />, label: "Members" },
-    { icon: <MdEventAvailable size={50} color="#059669" />, label: "Events" },
-    { icon: <MdAnnouncement size={50} color="#ef4444" />, label: "Announcements" },
-    { icon: <FaUserGraduate size={50} color="#f59e0b" />, label: "Students" },
-    { icon: <FaChalkboardTeacher size={50} color="#8b5cf6" />, label: "Mentors" },
-    { icon: <MdWorkspacePremium size={50} color="#14b8a6" />, label: "Certificates" },
-    { icon: <MdLeaderboard size={50} color="#0ea5e9" />, label: "Leaderboard" },
-    { icon: <FaTasks size={50} color="#ec4899" />, label: "Tasks" },
-    { icon: <GiDiscussion size={50} color="#7c3aed" />, label: "Discussions" },
-    { icon: <MdAdminPanelSettings size={50} color="#6b7280" />, label: "Admin Panel" },
-    { icon: <GiPartyPopper size={50} color="#e11d48" />, label: "Celebrations" },
-    { icon: <GiSettingsKnobs size={50} color="#64748b" />, label: "Settings" },
-    { icon: <MdEmojiEvents size={50} color="#facc15" />, label: "Achievements" },
-  ];
-
+function Createclub()
+{
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 gap-6 p-4 bg-white shadow rounded-xl">
-      {icons.map(({ icon, label }, idx) => (
-        <div key={idx} className="flex flex-col items-center">
-          {icon}
-          <span className="mt-2 text-sm text-gray-700 font-medium">{label}</span>
-        </div>
-      ))}
+    <div class="justify-center pt-20 flex ">
+      <div class="shadow-2xl w-[800px] h-[600px]">
+
+      </div>
+
     </div>
-  );
+  )
 }
+export default Createclub;
