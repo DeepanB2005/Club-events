@@ -25,9 +25,20 @@ router.get('/rollNo/:rollNo', async (req, res) => {
   }
 });
 
+// Get all student usernames
+router.get('/students/usernames', async (req, res) => {
+  try {
+    const students = await User.find({ role: 'student' }).select('username -_id');
+    res.json(students.map(s => s.username));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // filepath: bc/routes/users.js
 router.get('/api/users', async (req, res) => {
   try {
+    console.log('Fetching all users');
     const users = await User.find().select('-password');
     res.json(users);
   } catch (err) {
