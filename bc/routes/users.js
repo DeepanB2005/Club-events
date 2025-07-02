@@ -25,6 +25,16 @@ router.get('/rollNo/:rollNo', async (req, res) => {
   }
 });
 
+// Add this to your users.js router
+router.get('/students', async (req, res) => {
+  try {
+    const students = await User.find({ role: 'student' }).select('-password');
+    res.json(students);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // filepath: bc/routes/users.js
 router.get('/api/users', async (req, res) => {
   try {
