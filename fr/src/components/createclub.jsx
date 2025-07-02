@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserGraduate, FaChalkboardTeacher, FaTasks } from "react-icons/fa";
-import {
-  MdGroups,
-  MdEventAvailable,
-  MdAnnouncement,
-  MdWorkspacePremium,
-  MdLeaderboard,
-  MdEmojiEvents,
-  MdAdminPanelSettings,
-} from "react-icons/md";
+
 
 function Createclub()
 {
-const [studentNames, setStudentNames] = useState([]);
 
-useEffect(() => {
-  fetch('/students/usernames')
-    .then(res => res.json())
-    .then(data => setStudentNames(data))
-    .catch(() => setStudentNames([]));
-}, []);
+ const [errors, setErrors] = useState({});
+ const [users, setUsers] = useState([]); // <-- Add this state
+
+ // Fetch users on mount
+  useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => setUsers(data))
+      .catch(() => setUsers([]));
+  }, []);
 
   return (
     <div class="flex justify-center items-center p-10 font-ft flex-col">
@@ -72,15 +66,27 @@ useEffect(() => {
               type="text"
               placeholder="Enter club name"
             />
-            <label class="block text-gray-700 text-lg font-bold mt-5 mb-2">
+            <label className="block text-gray-700 text-lg font-bold mt-5 mb-2">
               Select Leader
             </label>
-            <select class="shadow appearance-none border rounded-2xl h-9 w-60 p-1 text-gray-400 leading-tight shadow-md pl-3  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="">Select a student</option>
-              {studentNames.map((name, idx) => (
-                <option key={idx} value={name}>{name}</option>
-              ))}
-            </select>
+
+            
+            <select className="shadow appearance-none border rounded-2xl h-9 w-60 p-1 text-gray-400 leading-tight shadow-md pl-3  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Select a leader</option>
+           {users.map(user => (
+             <option key={user._id} value={user.username}>
+               {user.username} ({user.email})
+             </option>
+           ))}
+         </select>
+         {errors.leader && (
+           <p className="text-red-500 text-xs flex items-center mt-1">
+             <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+             </svg>
+             {errors.leader}
+           </p>
+         )}
           </div>
           </form>
       </div>
