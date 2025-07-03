@@ -15,8 +15,8 @@ app.use(cors({
   credentials: true
 }));
 // Body parser middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' })); // or higher if needed
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 
 //-----------------------------------------------

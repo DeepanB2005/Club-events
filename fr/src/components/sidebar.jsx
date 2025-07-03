@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
 
   // Get menu items based on user role
   const getMenuItems = () => {
-    const userRole = user?.role || 'student'; // Default to student if no role found
+    const userRole = user?.role || 'student'; 
     switch (userRole) {
       case 'admin':
         return [

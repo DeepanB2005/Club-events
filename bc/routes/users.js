@@ -36,10 +36,12 @@ router.get('/students', async (req, res) => {
 });
 
 // filepath: bc/routes/users.js
+//getus
 router.get('/api/users', async (req, res) => {
   try {
     const users = await User.find().select('-password');
     res.json(users);
+    console.log("getting user name")
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

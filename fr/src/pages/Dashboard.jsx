@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/sidebar.jsx';
 import Createclub from '../components/createclub.jsx';
+import ManageClubs from '../components/Manageclubs.jsx'; 
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,6 +16,8 @@ const Dashboard = () => {
     switch (activeMenu) {
       case 'create-clubs':
         return <Createclub />;
+      case 'manage-clubs':
+        return <ManageClubs/>
       default:
         return (
           <div className="flex flex-col items-center justify-center w-full h-full">
@@ -24,6 +27,7 @@ const Dashboard = () => {
     }
   };
 
+  
   return (
     <div className="flex h-screen bg-gradient-to-r from-blue-200 to-purple-100 dark:bg-gradient-to-r dark:from-black dark:to-yellow-950">
       <Sidebar

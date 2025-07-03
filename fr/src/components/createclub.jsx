@@ -5,15 +5,16 @@ function Createclub() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null); // New state for image preview
+  const [previewImage, setPreviewImage] = useState(null);
+  const [clubName, setClubName] = useState('');
+  const [clubDescription, setClubDescription] = useState('');
+  const [clubLeader, setClubLeader] = useState('');
 
-  // Fetch users on mount
+  // Fetch users inmount
   useEffect(() => {
     fetch('http://localhost:5000/api/users')
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
       .then(data => {
@@ -27,8 +28,56 @@ function Createclub() {
       });
   }, []);
 
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    // Basic validation
+    if (!clubName.trim()) {
+      setErrors({ clubName: 'Club name is required' });
+      return;
+    }
+    if (!clubLeader) {
+      setErrors({ clubLeader: 'Please select a leader' });
+      return;
+    }
+    if (!clubDescription.trim()) {
+      setErrors({ clubDescription: 'Description is required' });
+      return;
+    }
+
+    const data = {
+      name: clubName,
+      description: clubDescription,
+      leader: clubLeader,
+      profilePhoto: previewImage,
+      members: [users.find(u => u.username === clubLeader)?._id].filter(Boolean)
+    };
+
+    try {
+      const res = await fetch('http://localhost:5000/api/clubs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        setErrors({ submit: errData.error || 'Failed to create club' });
+      } else {
+        // Success: reset form or show a message
+        setClubName('');
+        setClubDescription('');
+        setClubLeader('');
+        setPreviewImage(null);
+        alert('Club created successfully!');
+      }
+    } catch (err) {
+      setErrors({ submit: err.message });
+    }
+  };
+
   return (
-    <div className="flex justify-center items-center p-10 font-ft flex-col">
+    <div className="flex justify-center items-center p-10 max-md:p-5 font-ft flex-col">
       <div className="flex flex-col items-center">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#4361ee] to-[#f72585] rounded-full mb-4 shadow-lg">
           <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,8 +92,8 @@ function Createclub() {
         Build a community around your passion
       </p>
 
-      <div className="shadow-2xl w-[700px] h-[500px] mt-5 pt-14 pl-4 rounded-2xl bg-gradient-to-r from-blue-200 to-violet-200 justify-center items-center">
-        <form className="flex pl-10">
+      <div className="shadow-2xl w-[700px] h-[500px] max-md:h-[9000px] max-md:w-80 max-md:ml-0 mt-5 pt-14 pl-4 rounded-2xl bg-gradient-to-r from-blue-200 to-violet-200 justify-center items-center">
+        <form className="flex max-md:flex-col pl-10" onSubmit={handleSubmit}>
           <div>
             <div className="w-[80px]">
               <label htmlFor="profilePhoto" className="cursor-pointer">
@@ -89,12 +138,19 @@ function Createclub() {
               id="clubName"
               type="text"
               placeholder="Enter club name"
+              value={clubName}
+              onChange={e => setClubName(e.target.value)}
             />
+            {errors.clubName && <p className="text-red-500 text-xs mt-1">{errors.clubName}</p>}
 
             <label className="block text-gray-700 text-lg font-bold mt-5 mb-2">
               Select Leader
             </label>
-            <select className="shadow appearance-none border rounded-2xl h-10 bg-gray-100 w-60 p-1 leading-tight shadow-md pl-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select
+              className="shadow appearance-none border rounded-2xl h-10 bg-gray-100 w-60 p-1 leading-tight shadow-md pl-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={clubLeader}
+              onChange={e => setClubLeader(e.target.value)}
+            >
               <option value="">
                 {loading ? "Loading users..." : error ? "Error loading users" : "Select a leader"}
               </option>
@@ -104,6 +160,7 @@ function Createclub() {
                 </option>
               ))}
             </select>
+            {errors.clubLeader && <p className="text-red-500 text-xs mt-1">{errors.clubLeader}</p>}
 
             {error && (
               <p className="text-red-500 text-xs flex items-center mt-1">
@@ -114,34 +171,37 @@ function Createclub() {
               </p>
             )}
 
-            {errors.leader && (
+            {errors.submit && (
               <p className="text-red-500 text-xs flex items-center mt-1">
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                {errors.leader}
+                {errors.submit}
               </p>
             )}
           </div>
-          <div className="mt-0 h-70 rounded-3xl w-[310px] ml-10">
+          <div className="mt-0 h-70 rounded-3xl w-[310px] ml-10 max-md:mr-5">
             <p>Club Description</p>
             <div className="h-60 mt-2 bg-gray-100 drop-shadow-md border-gray-900 rounded-3xl">
               <textarea
                 className="w-full h-full p-3 rounded-3xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter club description"
+                value={clubDescription}
+                onChange={e => setClubDescription(e.target.value)}
               ></textarea>
             </div>
+            {errors.clubDescription && <p className="text-red-500 text-xs mt-1">{errors.clubDescription}</p>}
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 ml-5">
               Provide a brief description of your club's purpose and activities
             </p>
           </div>
         </form>
-        
         <div className="w-full h-[2px] bg-gradient-to-r from-[#4361ee] to-[#f72585] mt-5 mb-5"></div>
         <div className="flex justify-center items-center mt-5">
           <button
             className="bg-gradient-to-r from-[#4361ee] to-[#f72585] text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300"
             type="submit"
+            onClick={handleSubmit}
           >
             Create Club
           </button>
