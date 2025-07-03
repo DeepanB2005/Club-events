@@ -28,6 +28,10 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/clubs', clubRoutes);
 
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
 app.listen(port,(e)=>{
     if(e) 
     {

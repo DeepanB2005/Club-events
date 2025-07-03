@@ -127,12 +127,10 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
     
-    // In production, you should hash passwords and compare hashed versions
     if (user.password !== password) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
     
-    // Return user without password
     const userResponse = user.toObject();
     delete userResponse.password;
     

@@ -5,6 +5,7 @@ function ManageClubs() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedClub, setSelectedClub] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/clubs')
@@ -24,20 +25,37 @@ function ManageClubs() {
       });
   }, []);
 
-  const handleDeleteClub = async (clubId) => {
-    if (!window.confirm('Are you sure you want to delete this club?')) return;
-    try {
-      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) throw new Error('Failed to delete club');
-      setClubs(clubs.filter(club => club._id !== clubId));
-      setSelectedClub(null);
-      alert('Club deleted successfully!');
-    } catch (err) {
-      alert('Error deleting club: ' + err.message);
-    }
-  };
+  // const handleDeleteClub = async (clubName) => {
+  //   if (!window.confirm('Are you sure you want to delete this club? This action cannot be undone.')) return;
+
+  //   setDeleting(true);
+  //   try {
+  //     const res = await fetch(`http://localhost:5000/api/clubs/name/${encodeURIComponent(clubName)}`, {
+  //       method: 'DELETE',
+  //     });
+
+  //     const contentType = res.headers.get('content-type');
+  //     let data;
+  //     if (contentType && contentType.includes('application/json')) {
+  //       data = await res.json();
+  //     } else {
+  //       const text = await res.text();
+  //       throw new Error(text || 'Server returned non-JSON response.');
+  //     }
+
+  //     if (!res.ok) {
+  //       throw new Error(data.error || 'Failed to delete club');
+  //     }
+
+  //     setClubs(prev => prev.filter(club => club.name !== clubName));
+  //     setSelectedClub(null);
+  //     alert('Club deleted successfully!');
+  //   } catch (err) {
+  //     alert('Error deleting club: ' + err.message);
+  //   } finally {
+  //     setDeleting(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex flex-col items-center font-ft p-6 bg-gray-50">
@@ -82,7 +100,6 @@ function ManageClubs() {
         </div>
       )}
 
-
       {selectedClub && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative">
@@ -125,6 +142,22 @@ function ManageClubs() {
               )}
               <p className="text-xs text-gray-400 mt-4">Created: {new Date(selectedClub.createdAt).toLocaleString()}</p>
               
+              {/* Delete Button */}
+              <div className="mt-6 flex gap-3">
+                <button
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  onClick={() => setSelectedClub(null)}
+                >
+                  Close
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handleDeleteClub(selectedClub.name)}
+                  disabled={deleting}
+                >
+                  {deleting ? 'Deleting...' : 'Delete Club'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
