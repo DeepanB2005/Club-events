@@ -28,11 +28,9 @@ function Createclub() {
       });
   }, []);
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    // Basic validation
     if (!clubName.trim()) {
       setErrors({ clubName: 'Club name is required' });
       return;
@@ -46,12 +44,13 @@ function Createclub() {
       return;
     }
 
+    const leaderUser = users.find(u => u.username === clubLeader);
     const data = {
       name: clubName,
       description: clubDescription,
-      leader: clubLeader,
+      leader: leaderUser?._id, 
       profilePhoto: previewImage,
-      members: [users.find(u => u.username === clubLeader)?._id].filter(Boolean)
+      members: [leaderUser?._id].filter(Boolean)
     };
 
     try {
@@ -64,7 +63,6 @@ function Createclub() {
         const errData = await res.json();
         setErrors({ submit: errData.error || 'Failed to create club' });
       } else {
-        // Success: reset form or show a message
         setClubName('');
         setClubDescription('');
         setClubLeader('');
