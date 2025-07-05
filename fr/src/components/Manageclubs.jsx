@@ -25,40 +25,40 @@ function ManageClubs() {
       });
   }, []);
 
-  // const handleDeleteClub = async (clubName) => {
-  //   if (!window.confirm('Are you sure you want to delete this club? This action cannot be undone.')) return;
+  const handleDeleteClub = async (clubId) => {
+    if (!window.confirm('Are you sure you want to delete this club? This action cannot be undone.')) return;
 
-  //   setDeleting(true);
-  //   try {
-  //     const res = await fetch(`http://localhost:5000/api/clubs/name/${encodeURIComponent(clubName)}`, {
-  //       method: 'DELETE',
-  //     });
+    setDeleting(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}`, {
+        method: 'DELETE',
+      });
 
-  //     const contentType = res.headers.get('content-type');
-  //     let data;
-  //     if (contentType && contentType.includes('application/json')) {
-  //       data = await res.json();
-  //     } else {
-  //       const text = await res.text();
-  //       throw new Error(text || 'Server returned non-JSON response.');
-  //     }
+      const contentType = res.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || 'Server returned non-JSON response.');
+      }
 
-  //     if (!res.ok) {
-  //       throw new Error(data.error || 'Failed to delete club');
-  //     }
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to delete club');
+      }
 
-  //     setClubs(prev => prev.filter(club => club.name !== clubName));
-  //     setSelectedClub(null);
-  //     alert('Club deleted successfully!');
-  //   } catch (err) {
-  //     alert('Error deleting club: ' + err.message);
-  //   } finally {
-  //     setDeleting(false);
-  //   }
-  // };
+      setClubs(prev => prev.filter(club => club._id !== clubId));
+      setSelectedClub(null);
+      alert('Club deleted successfully!');
+    } catch (err) {
+      alert('Error deleting club: ' + err.message);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center font-ft p-6 bg-gray-50">
+    <div className="min-h-screen flex flex-col items-center font-ft p-6 ">
       <h1 className="text-3xl font-bold bg-gradient-to-t from-yellow-500 to-red-500 bg-clip-text text-transparent mb-8">
         Manage Clubs
       </h1>
@@ -67,11 +67,11 @@ function ManageClubs() {
       ) : error ? (
         <div className="text-red-500">{error}</div>
       ) : (
-        <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-14">
           {clubs.map(club => (
             <button
               key={club._id}
-              className="bg-gradient-to-r from-green-200 to-blue-100 rounded-2xl shadow-lg p-5 flex flex-col items-center hover:scale-105 transition-transform focus:outline-none"
+              className="bg-gradient-to-r from-red-200 via-gray-200 to-red-300 rounded-2xl shadow-lg p-5 flex flex-col items-center hover:scale-105 transition-transform focus:outline-none"
               onClick={() => setSelectedClub(club)}
             >
               {club.profilePhoto ? (
@@ -81,7 +81,7 @@ function ManageClubs() {
                   className="w-24 h-24 object-cover rounded-full mb-4 border-4 border-blue-200"
                 />
               ) : (
-                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-200 mb-4 text-3xl text-white font-bold">
+                <div className="w-24 h-24 flex items-center justify-center rounded-full  bg-blue-200 mb-4 text-3xl text-white font-bold">
                   {club.name?.charAt(0) || "?"}
                 </div>
               )}
@@ -152,7 +152,7 @@ function ManageClubs() {
                 </button>
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => handleDeleteClub(selectedClub.name)}
+                  onClick={() => handleDeleteClub(selectedClub._id)}
                   disabled={deleting}
                 >
                   {deleting ? 'Deleting...' : 'Delete Club'}

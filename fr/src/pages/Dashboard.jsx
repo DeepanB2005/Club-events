@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Sidebar from '../components/sidebar.jsx';
 import Createclub from '../components/createclub.jsx';
 import ManageClubs from '../components/Manageclubs.jsx'; 
+import Manageusers from '../components/Manageusers.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -17,7 +18,9 @@ const Dashboard = () => {
       case 'create-clubs':
         return <Createclub />;
       case 'manage-clubs':
-        return <ManageClubs/>
+        return <ManageClubs/>;
+      case 'manage-users':
+        return <Manageusers />;
       default:
         return (
           <div className="flex flex-col items-center justify-center w-full h-full">
