@@ -14,24 +14,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a single club by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const club = await Club.findById(req.params.id)
-      .populate('members')
-      .populate('leader')
-      .populate('events');
-    
-    if (!club) {
-      return res.status(404).json({ error: 'Club not found' });
-    }
-    
-    res.json(club);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // Create a new club
 router.post('/', async (req, res) => {
   try {
@@ -56,48 +38,90 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update a club by ID
-router.put('/:id', async (req, res) => {
+// Add a member to a club
+router.post('/:id/members', async (req, res) => {
   try {
-    const { name, description, leader, profilePhoto, members } = req.body;
+    const { userId } = req.body;
     
-    // Find the club first to check if it exists
-    const existingClub = await Club.findById(req.params.id);
-    if (!existingClub) {
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Example for all routes using req.params.id:
+    const clubId = req.params.id.trim();
+    const club = await Club.findById(clubId);
+    if (!club) {
       return res.status(404).json({ error: 'Club not found' });
     }
 
-    // Update the club
-    const updatedClub = await Club.findByIdAndUpdate(
-      req.params.id,
-      {
-        name,
-        description,
-        leader,
-        profilePhoto,
-        members
-      },
-      { 
-        new: true, // Return the updated document
-        runValidators: true // Run schema validations
-      }
-    ).populate('members').populate('leader');
+    // Check if user is already a member
+    if (club.members.includes(userId)) {
+      return res.status(400).json({ error: 'User is already a member of this club' });
+    }
+
+    club.members.push(userId);
+    await club.save();
+
+    const updatedClub = await Club.findById(clubId)
+      .populate('members')
+      .populate('leader');
 
     res.json({
-      message: 'Club updated successfully',
+      message: 'Member added successfully',
       club: updatedClub
     });
 
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      const errors = Object.values(err.errors).map(e => e.message);
-      return res.status(400).json({ error: errors.join(', ') });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// Remove a member from a club
+router.delete('/:id/members/:userId', async (req, res) => {
+  try {
+    const { id, userId } = req.params;
+
+    const club = await Club.findById(id);
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
+    }
+
+    if (!club.members.includes(userId)) {
+      return res.status(400).json({ error: 'User is not a member of this club' });
+    }
+
+    club.members = club.members.filter(member => member.toString() !== userId);
+    await club.save();
+
+    const updatedClub = await Club.findById(id)
+      .populate('members')
+      .populate('leader');
+
+    res.json({
+      message: 'Member removed successfully',
+      club: updatedClub
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get a single club by ID - MOVED TO END
+router.get('/:id', async (req, res) => {
+  try {
+    const club = await Club.findById(req.params.id)
+      .populate('members')
+      .populate('leader')
+      .populate('events');
+    
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
     }
     
-    if (err.code === 11000) {
-      return res.status(400).json({ error: 'Club name already exists' });
-    }
-    
+    res.json(club);
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
@@ -121,108 +145,6 @@ router.delete('/:id', async (req, res) => {
       }
     });
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Add a member to a club
-router.post('/:id/members', async (req, res) => {
-  try {
-    const { userId } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'User ID is required' });
-    }
-
-    const club = await Club.findById(req.params.id);
-    if (!club) {
-      return res.status(404).json({ error: 'Club not found' });
-    }
-
-    // Check if user is already a member
-    if (club.members.includes(userId)) {
-      return res.status(400).json({ error: 'User is already a member of this club' });
-    }
-
-    club.members.push(userId);
-    await club.save();
-
-    const updatedClub = await Club.findById(req.params.id)
-      .populate('members')
-      .populate('leader');
-
-    res.json({
-      message: 'Member added successfully',
-      club: updatedClub
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Remove a member from a club
-router.delete('/:id/members/:userId', async (req, res) => {
-  try {
-    const { id, userId } = req.params;
-
-    const club = await Club.findById(id);
-    if (!club) {
-      return res.status(404).json({ error: 'Club not found' });
-    }
-
-    // Check if user is a member
-    if (!club.members.includes(userId)) {
-      return res.status(400).json({ error: 'User is not a member of this club' });
-    }
-
-    club.members = club.members.filter(member => member.toString() !== userId);
-    await club.save();
-
-    const updatedClub = await Club.findById(id)
-      .populate('members')
-      .populate('leader');
-
-    res.json({
-      message: 'Member removed successfully',
-      club: updatedClub
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Change the leader of a club
-router.put('/:id/leader', async (req, res) => {
-  console.log('PUT /api/clubs/:id/leader called with id:', req.params.id);
-  try {
-    const { leaderId } = req.body;
-    if (!leaderId) {
-      return res.status(400).json({ error: 'Leader ID is required' });
-    }
-
-    const club = await Club.findById(req.params.id);
-    if (!club) {
-      return res.status(404).json({ error: 'Club not found' });
-    }
-
-    if (!club.members.map(m => m.toString()).includes(leaderId)) {
-      club.members.push(leaderId);
-    }
-
-    club.leader = leaderId;
-    await club.save();
-
-    const updatedClub = await Club.findById(req.params.id)
-      .populate('members')
-      .populate('leader');
-
-    res.json({
-      message: 'Leader changed successfully',
-      club: updatedClub
-    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

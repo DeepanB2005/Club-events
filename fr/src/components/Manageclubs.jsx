@@ -54,41 +54,58 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
     }
   };
 
-  const handleChangeLeader = async (clubId, newLeaderId) => {
+const handleChangeLeader = async (clubId, newLeaderId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}/leader`, { 
+      console.log('Changing leader for club:', clubId, 'to user:', newLeaderId); // Debug log
+      
+      const url = `http://localhost:5000/api/clubs/${clubId}/leader`;
+      console.log('Making request to:', url); // Debug log
+      
+      const res = await fetch(url, { 
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ leaderId: newLeaderId }),
       });
+      
+      console.log('Response status:', res.status); // Debug log
+      console.log('Response headers:', res.headers); // Debug log
+      
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to change leader');
+        const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(data.error || `HTTP ${res.status}: Failed to change leader`);
       }
-      // Update local state
+      
+      const responseData = await res.json();
+      console.log('Success response:', responseData); // Debug log
+      
+      // Update local state with the response data
       setClubs(prev =>
         prev.map(club =>
           club._id === clubId
-            ? { ...club, leader: club.members.find(m => m._id === newLeaderId) }
+            ? { ...club, leader: responseData.club.leader }
             : club
         )
       );
+      
       if (setClubsProp) {
         setClubsProp(prev =>
           prev.map(club =>
             club._id === clubId
-              ? { ...club, leader: club.members.find(m => m._id === newLeaderId) }
+              ? { ...club, leader: responseData.club.leader }
               : club
           )
         );
       }
+      
       setSelectedClub(prev =>
         prev
-          ? { ...prev, leader: prev.members.find(m => m._id === newLeaderId) }
+          ? { ...prev, leader: responseData.club.leader }
           : prev
       );
+      
       alert('Leader changed successfully!');
     } catch (err) {
+      console.error('Error changing leader:', err); // Debug log
       alert('Error changing leader: ' + err.message);
     }
   };
