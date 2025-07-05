@@ -1,31 +1,27 @@
 import React, { useState, useEffect } from 'react';
 
-function ManageClubs() {
-  const [clubs, setClubs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, setClubs: setClubsProp }) {
+  const [clubs, setClubs] = useState(clubsProp || []);
+  const [loading, setLoading] = useState(loadingProp ?? true);
+  const [error, setError] = useState(errorProp || null);
   const [selectedClub, setSelectedClub] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [allUsers, setAllUsers] = useState([]); // <-- Add this state
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/clubs')
-      .then(res => {
-        console.log("get clubs from server");
-        console.log(res);
-        if (!res.ok) throw new Error('Failed to fetch clubs');
-        return res.json();
-      })
-      .then(data => {
-        setClubs(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
+    if (clubsProp) setClubs(clubsProp);
+    if (loadingProp !== undefined) setLoading(loadingProp);
+    if (errorProp) setError(errorProp);
+  }, [clubsProp, loadingProp, errorProp]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/users')
+      .then(res => res.json())
+      .then(data => setAllUsers(data))
+      .catch(() => setAllUsers([]));
   }, []);
 
-  const handleDeleteClub = async (clubId) => {
+ const handleDeleteClub = async (clubId) => {
     if (!window.confirm('Are you sure you want to delete this club? This action cannot be undone.')) return;
 
     setDeleting(true);
@@ -48,12 +44,52 @@ function ManageClubs() {
       }
 
       setClubs(prev => prev.filter(club => club._id !== clubId));
+      if (setClubsProp) setClubsProp(prev => prev.filter(club => club._id !== clubId));
       setSelectedClub(null);
       alert('Club deleted successfully!');
     } catch (err) {
       alert('Error deleting club: ' + err.message);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleChangeLeader = async (clubId, newLeaderId) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}/leader`, { 
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leaderId: newLeaderId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to change leader');
+      }
+      // Update local state
+      setClubs(prev =>
+        prev.map(club =>
+          club._id === clubId
+            ? { ...club, leader: club.members.find(m => m._id === newLeaderId) }
+            : club
+        )
+      );
+      if (setClubsProp) {
+        setClubsProp(prev =>
+          prev.map(club =>
+            club._id === clubId
+              ? { ...club, leader: club.members.find(m => m._id === newLeaderId) }
+              : club
+          )
+        );
+      }
+      setSelectedClub(prev =>
+        prev
+          ? { ...prev, leader: prev.members.find(m => m._id === newLeaderId) }
+          : prev
+      );
+      alert('Leader changed successfully!');
+    } catch (err) {
+      alert('Error changing leader: ' + err.message);
     }
   };
 
@@ -102,9 +138,9 @@ function ManageClubs() {
 
       {selectedClub && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full relative">
             <button
-              className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl"
+              className="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-3xl"
               onClick={() => setSelectedClub(null)}
               aria-label="Close"
             >
@@ -122,14 +158,30 @@ function ManageClubs() {
                   {selectedClub.name?.charAt(0) || "?"}
                 </div>
               )}
-              <h2 className="text-2xl font-bold text-blue-700 mb-2">{selectedClub.name}</h2>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-red-400 text-transparent bg-clip-text mb-2">{selectedClub.name}</h2>
               <p className="text-gray-700 text-justify mb-4">{selectedClub.description}</p>
-              <p className="text-md text-gray-600 mb-2">
-                <span className="font-semibold">Leader:</span> {selectedClub.leader?.username || selectedClub.leader?.email || selectedClub.leader?._id}
-              </p>
-              <p className="text-md text-gray-600 mb-2">
-                <span className="font-semibold">Members:</span> {selectedClub.members?.length || 0}
-              </p>
+              <div className="flex flex-wrap text-md text-gray-600 mb-2 w-full justify-between items-center">
+                <span>
+                  <span className="font-bold text-green-500">Leader:</span> {selectedClub.leader?.username || selectedClub.leader?.email || selectedClub.leader?._id}
+                </span>
+                {/* Stylish Change Leader Dropdown */}
+                <div className="flex items-center gap-2">
+                  <label htmlFor="change-leader" className="text-blue-500 font-semibold">Change Leader:</label>
+                  <select
+                    id="change-leader"
+                    className="rounded-lg border border-blue-300 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                    value={selectedClub.leader?._id || ""}
+                    onChange={e => handleChangeLeader(selectedClub._id, e.target.value)}
+                  >
+                    <option value="" disabled>Select user</option>
+                    {allUsers.map(user => (
+                      <option key={user._id} value={user._id}>
+                        {user.username || user.email || user._id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               {selectedClub.members && selectedClub.members.length > 0 && (
                 <div className="w-full mt-2">
                   <span className="font-semibold text-gray-700">Member List:</span>
@@ -142,16 +194,11 @@ function ManageClubs() {
               )}
               <p className="text-xs text-gray-400 mt-4">Created: {new Date(selectedClub.createdAt).toLocaleString()}</p>
               
-              {/* Delete Button */}
-              <div className="mt-6 flex gap-3">
+
+              <div className="mt-3 flex gap-3">
+                
                 <button
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
-                  onClick={() => setSelectedClub(null)}
-                >
-                  Close
-                </button>
-                <button
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleDeleteClub(selectedClub._id)}
                   disabled={deleting}
                 >

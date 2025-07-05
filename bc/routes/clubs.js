@@ -194,4 +194,38 @@ router.delete('/:id/members/:userId', async (req, res) => {
   }
 });
 
+// Change the leader of a club
+router.put('/:id/leader', async (req, res) => {
+  console.log('PUT /api/clubs/:id/leader called with id:', req.params.id);
+  try {
+    const { leaderId } = req.body;
+    if (!leaderId) {
+      return res.status(400).json({ error: 'Leader ID is required' });
+    }
+
+    const club = await Club.findById(req.params.id);
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
+    }
+
+    if (!club.members.map(m => m.toString()).includes(leaderId)) {
+      club.members.push(leaderId);
+    }
+
+    club.leader = leaderId;
+    await club.save();
+
+    const updatedClub = await Club.findById(req.params.id)
+      .populate('members')
+      .populate('leader');
+
+    res.json({
+      message: 'Leader changed successfully',
+      club: updatedClub
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

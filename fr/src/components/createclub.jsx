@@ -145,7 +145,7 @@ function Createclub() {
               Select Leader
             </label>
             <select
-              className="shadow appearance-none border rounded-2xl h-10 bg-gray-100 w-60 p-1 leading-tight shadow-md pl-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="appearance-none border rounded-2xl h-10 bg-gray-100 w-60 p-1 leading-tight shadow-md pl-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={clubLeader}
               onChange={e => setClubLeader(e.target.value)}
             >
