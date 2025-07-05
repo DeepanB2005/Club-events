@@ -150,4 +150,115 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+// Update club details (PUT route)
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, description, leader, profilePhoto } = req.body;
+    const clubId = req.params.id.trim();
+
+    // Find the club first
+    const club = await Club.findById(clubId);
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
+    }
+
+    // Check if name is being changed and if it already exists
+    if (name && name !== club.name) {
+      const existingClub = await Club.findOne({ name: name });
+      if (existingClub) {
+        return res.status(400).json({ error: 'Club name already exists' });
+      }
+    }
+
+    // Update only the fields that are provided
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (leader !== undefined) updateData.leader = leader;
+    if (profilePhoto !== undefined) updateData.profilePhoto = profilePhoto;
+
+    // Update the club
+    const updatedClub = await Club.findByIdAndUpdate(
+      clubId,
+      updateData,
+      { new: true, runValidators: true }
+    )
+    .populate('members')
+    .populate('leader');
+    // Remove .populate('events') until Event model is created
+
+    res.json({
+      message: 'Club updated successfully',
+      club: updatedClub
+    });
+
+  } catch (err) {
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ error: errors.join(', ') });
+    }
+
+    // Handle duplicate key errors
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({ error: `${field} already exists` });
+    }
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Alternative: PATCH route for partial updates
+router.patch('/:id', async (req, res) => {
+  try {
+    const clubId = req.params.id.trim();
+    const updates = req.body;
+
+    // Find the club first
+    const club = await Club.findById(clubId);
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
+    }
+
+    // Check if name is being changed and if it already exists
+    if (updates.name && updates.name !== club.name) {
+      const existingClub = await Club.findOne({ name: updates.name });
+      if (existingClub) {
+        return res.status(400).json({ error: 'Club name already exists' });
+      }
+    }
+
+    // Update the club with only the provided fields
+    const updatedClub = await Club.findByIdAndUpdate(
+      clubId,
+      updates,
+      { new: true, runValidators: true }
+    )
+    .populate('members')
+    .populate('leader');
+    // Remove .populate('events') until Event model is created
+
+    res.json({
+      message: 'Club updated successfully',
+      club: updatedClub
+    });
+
+  } catch (err) {
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ error: errors.join(', ') });
+    }
+
+    // Handle duplicate key errors
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({ error: `${field} already exists` });
+    }
+
+    res.status(500).json({ error: err.message });
+  }
+});
 module.exports = router;
