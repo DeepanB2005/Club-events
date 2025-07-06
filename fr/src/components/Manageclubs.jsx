@@ -55,60 +55,60 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
   };
 
 const handleChangeLeader = async (clubId, newLeaderId) => {
-    try {
-      console.log('Changing leader for club:', clubId, 'to user:', newLeaderId); // Debug log
-      
-      const url = `http://localhost:5000/api/clubs/${clubId}/leader`;
-      console.log('Making request to:', url); // Debug log
-      
-      const res = await fetch(url, { 
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leaderId: newLeaderId }),
-      });
-      
-      console.log('Response status:', res.status); // Debug log
-      console.log('Response headers:', res.headers); // Debug log
-      
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(data.error || `HTTP ${res.status}: Failed to change leader`);
-      }
-      
-      const responseData = await res.json();
-      console.log('Success response:', responseData); // Debug log
-      
-      // Update local state with the response data
-      setClubs(prev =>
+  try {
+    console.log('Changing leader for club:', clubId, 'to user:', newLeaderId); // Debug log
+
+    const url = `http://localhost:5000/api/clubs/${clubId}`;
+    console.log('Making PATCH request to:', url); // Debug log
+
+    const res = await fetch(url, { 
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leader: newLeaderId }),
+    });
+
+    console.log('Response status:', res.status); // Debug log
+    console.log('Response headers:', res.headers); // Debug log
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(data.error || `HTTP ${res.status}: Failed to change leader`);
+    }
+
+    const responseData = await res.json();
+    console.log('Success response:', responseData); // Debug log
+
+    // Update local state with the response data
+    setClubs(prev =>
+      prev.map(club =>
+        club._id === clubId
+          ? { ...club, leader: responseData.club.leader }
+          : club
+      )
+    );
+
+    if (setClubsProp) {
+      setClubsProp(prev =>
         prev.map(club =>
           club._id === clubId
             ? { ...club, leader: responseData.club.leader }
             : club
         )
       );
-      
-      if (setClubsProp) {
-        setClubsProp(prev =>
-          prev.map(club =>
-            club._id === clubId
-              ? { ...club, leader: responseData.club.leader }
-              : club
-          )
-        );
-      }
-      
-      setSelectedClub(prev =>
-        prev
-          ? { ...prev, leader: responseData.club.leader }
-          : prev
-      );
-      
-      alert('Leader changed successfully!');
-    } catch (err) {
-      console.error('Error changing leader:', err); // Debug log
-      alert('Error changing leader: ' + err.message);
     }
-  };
+
+    setSelectedClub(prev =>
+      prev
+        ? { ...prev, leader: responseData.club.leader }
+        : prev
+    );
+
+    alert('Leader changed successfully!');
+  } catch (err) {
+    console.error('Error changing leader:', err); // Debug log
+    alert('Error changing leader: ' + err.message);
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col items-center font-ft p-6 ">

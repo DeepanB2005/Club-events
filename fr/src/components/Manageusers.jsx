@@ -72,10 +72,15 @@ function Manageusers({ users = [], clubs = [], loading = true, error = null, onD
                 &times;
               </button>
               <h2 className="text-2xl font-bold mb-4 text-center">User Details</h2>
-              <div className="mb-2"><span className="font-semibold">Username:</span> {selectedUser.username}</div>
-              <div className="mb-2"><span className="font-semibold">Email:</span> {selectedUser.email}</div>
-              <div className="mb-2"><span className="font-semibold">Role:</span> {selectedUser.role || "N/A"}</div>
-              <div className="mb-2"><span className="font-semibold">Clubs:</span>
+              <div className="mb-2"><span className="font-semibold text-green-300">Username:</span> {selectedUser.username}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Email:</span> {selectedUser.email}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300 mr-2">Gender: </span> {selectedUser.gender || "N/A"}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Date of Birth:</span> {selectedUser.dob ? new Date(selectedUser.dob).toLocaleDateString() : "N/A"}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Year: </span> {selectedUser.year || "N/A"}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Department:</span> {selectedUser.department || "N/A"}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Phone No:</span> {selectedUser.phoneNo || "N/A"}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Role:</span> {selectedUser.role || "N/A"}</div>
+              <div className="mb-2"><span className="font-semibold text-green-300">Clubs:</span>
                 <ul className="list-disc ml-6">
                   {getUserClubs(selectedUser._id).length > 0 ? (
                     getUserClubs(selectedUser._id).map(club => (
@@ -86,7 +91,7 @@ function Manageusers({ users = [], clubs = [], loading = true, error = null, onD
                   )}
                 </ul>
               </div>
-              <div className="mb-2"><span className="font-semibold">Leadership:</span>
+              <div className="mb-2"><span className="font-semibold text-green-300">Leadership:</span>
                 <ul className="list-disc ml-6">
                   {getLeadershipClubs(selectedUser._id).length > 0 ? (
                     getLeadershipClubs(selectedUser._id).map(club => (

@@ -162,7 +162,7 @@ function Login() {
     <div className="min-h-screen bg-gradient-to-br from-gray-300 via-gray-100 to-gray-300 relative overflow-hidden flex items-center justify-center">
       <div className="flex flex-col lg:flex-row h-[90vh] w-full max-w-6xl z-10 shadow-lg rounded-2xl overflow-hidden">
         {/* Left Side - Login/Signup Form */}
-        <div className="w-full lg:w-1/2 flex flex-col px-2 sm:px-5 py-5 bg-white dark:bg-black bg-opacity-90">
+        <div className="w-full lg:w-1/2 flex flex-col px-2 sm:px-5 py-5 bg-white bg-opacity-90">
           {/* Fixed Header Section */}
           <div className="w-full max-w-md mx-auto mb-6">
             <div className="text-center mb-4">

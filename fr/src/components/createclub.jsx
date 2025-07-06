@@ -145,7 +145,7 @@ function Createclub() {
               Select Leader
             </label>
             <select
-              className="appearance-none border rounded-2xl h-10 bg-gray-100 w-60 p-1 leading-tight shadow-md pl-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="appearance-none border rounded-2xl h-10 dark:text-gray-600 bg-gray-100 w-60 p-1 leading-tight shadow-md pl-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={clubLeader}
               onChange={e => setClubLeader(e.target.value)}
             >
@@ -182,7 +182,7 @@ function Createclub() {
             <p>Club Description</p>
             <div className="h-60 mt-2 bg-gray-100 drop-shadow-md border-gray-900 rounded-3xl">
               <textarea
-                className="w-full h-full p-3 rounded-3xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-full p-3 rounded-3xl dark:text-gray-600 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter club description"
                 value={clubDescription}
                 onChange={e => setClubDescription(e.target.value)}

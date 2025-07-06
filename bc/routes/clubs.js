@@ -151,7 +151,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 
-// Update club details (PUT route)
+
 router.put('/:id', async (req, res) => {
   try {
     const { name, description, leader, profilePhoto } = req.body;
@@ -186,7 +186,6 @@ router.put('/:id', async (req, res) => {
     )
     .populate('members')
     .populate('leader');
-    // Remove .populate('events') until Event model is created
 
     res.json({
       message: 'Club updated successfully',

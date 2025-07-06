@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
   const [user, setUser] = useState(null);
+  const [isLeader, setIsLeader] = useState(false); // <-- Add this
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,10 +26,23 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
         .catch(() => setUser(parsedUser)); 
     }
   }, []);
+  
+  useEffect(() => {
+    if (user && user._id) {
+      fetch('http://127.0.0.1:5000/api/clubs')
+        .then(res => res.json())
+        .then(clubs => {
+          const leadsAnyClub = clubs.some(club => club.leader && club.leader._id === user._id);
+          setIsLeader(leadsAnyClub);
+        })
+        .catch(() => setIsLeader(false));
+    }
+  }, [user]);
+  
 
-  // Get menu items based on user role
   const getMenuItems = () => {
-    const userRole = user?.role || 'student'; 
+    const userRole = user?.role || 'student';
+
     switch (userRole) {
       case 'admin':
         return [
@@ -39,38 +53,34 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
           { id: 'manage-users', label: 'Manage Users', icon: Users, color: 'text-red-500' },
           { id: 'settings', label: 'Settings', icon: Settings, color: 'text-gray-500' },
         ];
-      case 'leader':
-        return [
-          { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-500' },
-          { id: 'my-clubs', label: 'My Clubs', icon: Building2, color: 'text-green-500' },
-          { id: 'leadership', label: 'Leadership', icon: Crown, color: 'text-yellow-500' },
-          { id: 'create-events', label: 'Create Events', icon: PlusCircle, color: 'text-purple-500' },
-          { id: 'update-events', label: 'Update Events', icon: Edit, color: 'text-orange-500' },
-          { id: 'join-requests', label: 'Join Requests', icon: UserPlus, color: 'text-indigo-500' },
-          { id: 'manage-members', label: 'Manage Members', icon: UserCog, color: 'text-red-500' },
-        ];
       case 'student':
-      default:
-        return [
+      default: {
+        
+        const menu = [
           { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-500' },
           { id: 'clubs', label: 'Clubs', icon: Building2, color: 'text-green-500' },
           { id: 'events', label: 'Events', icon: Calendar, color: 'text-orange-500' },
           { id: 'all-clubs', label: 'All Clubs', icon: Eye, color: 'text-purple-500' },
           { id: 'settings', label: 'Settings', icon: Settings, color: 'text-gray-500' },
         ];
+        if (isLeader) {
+          menu.splice(4, 0,
+            { id: 'leadership', label: 'Leadership', icon: Crown, color: 'text-yellow-500' },
+            { id: 'manage-join-requests', label: 'Join Requests', icon: UserPlus, color: 'text-pink-500' }
+          );
+        }
+        return menu;
+      }
     }
   };
 
   const menuItems = getMenuItems();
 
-  // Get role display name and color
   const getRoleInfo = () => {
     const userRole = user?.role || 'student';
     switch (userRole) {
       case 'admin':
         return { name: 'Administrator', color: 'from-red-500 to-red-600', bgColor: 'bg-red-500' };
-      case 'leader':
-        return { name: 'Club Leader', color: 'from-blue-500 to-blue-600', bgColor: 'bg-blue-500' };
       case 'student':
       default:
         return { name: 'Student', color: 'from-green-500 to-green-600', bgColor: 'bg-green-500' };
@@ -81,7 +91,6 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    // localStorage.clear(); // Clear all local storage
     navigate("/");
   };
 

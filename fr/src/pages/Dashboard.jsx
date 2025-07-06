@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'; // Add this import
 import Sidebar from '../components/sidebar.jsx';
 import Createclub from '../components/createclub.jsx';
 import ManageClubs from '../components/Manageclubs.jsx'; 
 import Manageusers from '../components/Manageusers.jsx';
+import Leadership from '../components/student/Leadership.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,12 +16,15 @@ const Dashboard = () => {
   const [clubsError, setClubsError] = useState(null);
   const [usersError, setUsersError] = useState(null);
 
+  const location = useLocation(); // Get current route location
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   useEffect(() => {
     // Fetch clubs
+    setClubsLoading(true);
     fetch('http://localhost:5000/api/clubs')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch clubs');
@@ -36,6 +40,7 @@ const Dashboard = () => {
       });
 
     // Fetch users
+    setUsersLoading(true);
     fetch('http://localhost:5000/api/users')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch users');
@@ -49,7 +54,7 @@ const Dashboard = () => {
         setUsersError(err.message);
         setUsersLoading(false);
       });
-  }, []);
+  }, [location.pathname]);
 
   const renderContent = () => {
     switch (activeMenu) {
@@ -73,6 +78,25 @@ const Dashboard = () => {
             error={usersError || clubsError}
           />
         );
+      case 'leadership': {
+        const storedUser = localStorage.getItem('user');
+        let currentUser = null;
+        if (storedUser) {
+          try {
+            currentUser = JSON.parse(storedUser);
+          } catch (e) {
+            currentUser = null;
+          }
+        }
+        const userObj = users.find(u => u._id === (currentUser && currentUser._id));
+        return (
+          <Leadership
+            user={userObj}
+            clubs={clubs}
+            clubsLoading={clubsLoading}
+          />
+        );
+      }
       default:
         return (
           <div className="flex flex-col items-center justify-center w-full h-full">
