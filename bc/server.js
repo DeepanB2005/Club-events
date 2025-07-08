@@ -3,19 +3,18 @@ const connectDB = require('./db');
 const userRoutes = require('./routes/users');
 const clubRoutes = require('./routes/clubs');
 const cors = require('cors');
+const eventRoutes = require('./routes/events');
 
 connectDB();
 
 const app = express();
 const port = 5000;
 
-// CORS middleware to allow frontend communication
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
 }));
-// Body parser middleware
-app.use(express.json({ limit: '10mb' })); // or higher if needed
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 
@@ -27,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/clubs', clubRoutes);
+app.use('/api/events', eventRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
