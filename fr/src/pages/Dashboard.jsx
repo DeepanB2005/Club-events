@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // Add this import
+import { useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.jsx';
 import Createclub from '../components/createclub.jsx';
 import ManageClubs from '../components/Manageclubs.jsx'; 
 import Manageusers from '../components/Manageusers.jsx';
 import Leadership from '../components/student/Leadership.jsx';
 import Clubs from '../components/student/clubs.jsx';
+import Events from '../components/student/Events.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,7 +41,6 @@ const Dashboard = () => {
         setClubsLoading(false);
       });
 
-    // Fetch users
     setUsersLoading(true);
     fetch('http://localhost:5000/api/users')
       .then(res => {
@@ -61,6 +61,25 @@ const Dashboard = () => {
     switch (activeMenu) {
       case 'create-clubs':
         return <Createclub />;
+      case 'events': {
+        const storedUser = localStorage.getItem('user');
+        let currentUser = null;
+        if (storedUser) {
+          try {
+            currentUser = JSON.parse(storedUser);
+          } catch (e) {
+            currentUser = null;
+          }
+        }
+        const userObj = users.find(u => u._id === (currentUser && currentUser._id));
+        return (
+          <Events
+            user={userObj}
+            clubs={clubs}
+            clubsLoading={clubsLoading}
+          />
+        );
+      }
       case 'manage-clubs':
         return (
           <ManageClubs
@@ -107,6 +126,7 @@ const Dashboard = () => {
             setClubs={setClubs}
           />
         );
+      
       default:
         return (
           <div className="flex flex-col items-center justify-center w-full h-full">
