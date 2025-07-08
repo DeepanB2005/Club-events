@@ -258,6 +258,7 @@ function Events({ user, clubs = [], clubsLoading = false }) {
                 className="bg-white rounded-3xl shadow-xl p-6 flex flex-col items-center border-4 border-blue-100 hover:border-green-300 transition-all"
               >
                 {event.profilePhoto ? (
+                  
                   <img
                     src={event.profilePhoto}
                     alt={event.title}
