@@ -5,7 +5,7 @@ const Event = require('../models/Events');
 // Create a new event
 router.post('/', async (req, res) => {
   try {
-    const { title, description, date, price,time, profilePhoto, club } = req.body;
+    const { title, description, date, price, time, profilePhoto, club } = req.body;
     if (!title || !date || !club) {
       return res.status(400).json({ error: 'Title, date, and club are required.' });
     }
@@ -13,8 +13,8 @@ router.post('/', async (req, res) => {
       title,
       description,
       date,
+      time, // Now this will be saved
       price,
-      time,
       profilePhoto,
       club
     });

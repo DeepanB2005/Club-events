@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PlusCircle, X } from "lucide-react";
 
 function Events({ user, clubs = [], clubsLoading = false }) {
@@ -22,6 +22,25 @@ function Events({ user, clubs = [], clubsLoading = false }) {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [allEvents, setAllEvents] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+
+  // Fetch all events from the DB
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setEventsLoading(true);
+      try {
+        const res = await fetch("http://localhost:5000/api/events");
+        if (!res.ok) throw new Error("Failed to fetch events");
+        const data = await res.json();
+        setAllEvents(data);
+      } catch (err) {
+        setAllEvents([]);
+      }
+      setEventsLoading(false);
+    };
+    fetchEvents();
+  }, [success]); // refetch after successful event creation
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -49,16 +68,21 @@ function Events({ user, clubs = [], clubsLoading = false }) {
     }
 
     try {
+      let eventDateTime = form.date;
+      if (form.time) {
+        eventDateTime = `${form.date}T${form.time}:00`;
+      }
+
       const eventBody = {
-  title: form.title,
-  description: form.description,
-  date: form.date + (form.time ? "T" + form.time : ""),
-  time: form.time, // <-- send time separately
-  price: form.price,
-  profilePhoto: form.profilePhoto,
-  club: form.club,
-};
-console.log("Sending eventBody:", eventBody);
+        title: form.title,
+        description: form.description,
+        date: eventDateTime,
+        time: form.time,
+        price: form.price,
+        profilePhoto: form.profilePhoto,
+        club: form.club,
+      };
+
       const res = await fetch("http://localhost:5000/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,7 +112,7 @@ console.log("Sending eventBody:", eventBody);
       <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-green-400 bg-clip-text text-transparent">
         Events
       </h1>
-      <p className="text-lg text-gray-600 mb-4">No events available at the moment.</p>
+
       {isLeader && (
         <div className="mb-8 flex flex-col items-center">
           <button
@@ -218,8 +242,55 @@ console.log("Sending eventBody:", eventBody);
           )}
         </div>
       )}
+
+      {/* Stylish Events List */}
+      <div className="w-full max-w-6xl mt-8">
+        <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">All Events</h2>
+        {eventsLoading ? (
+          <div className="text-lg text-gray-600 text-center">Loading events...</div>
+        ) : allEvents.length === 0 ? (
+          <div className="text-lg text-gray-400 text-center">No events found.</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+            {allEvents.map(event => (
+              <div
+                key={event._id}
+                className="bg-white rounded-3xl shadow-xl p-6 flex flex-col items-center border-4 border-blue-100 hover:border-green-300 transition-all"
+              >
+                {event.profilePhoto ? (
+                  <img
+                    src={event.profilePhoto}
+                    alt={event.title}
+                    className="w-24 h-24 object-cover rounded-full mb-4 border-4 border-green-200 shadow"
+                  />
+                ) : (
+                  <div className="w-24 h-24 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-200 to-green-200 mb-4 text-3xl text-white font-extrabold border-4 border-green-200 shadow">
+                    {event.title?.charAt(0) || "?"}
+                  </div>
+                )}
+                <h3 className="text-xl font-bold text-blue-700 mb-1 text-center">{event.title}</h3>
+                <p className="text-gray-600 text-center mb-2 line-clamp-2">{event.description}</p>
+                <div className="flex flex-col items-center text-sm text-gray-500 mb-2">
+                  <span>
+                    <span className="font-semibold text-green-600">Club:</span>{" "}
+                    {event.club?.name || "Unknown"}
+                  </span>
+                  <span>
+                    <span className="font-semibold text-blue-600">Date:</span>{" "}
+                    {event.date ? new Date(event.date).toLocaleString() : "N/A"}
+                  </span>
+                  {event.price && (
+                    <span>
+                      <span className="font-semibold text-yellow-600">Price:</span> ₹{event.price}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
 export default Events;
