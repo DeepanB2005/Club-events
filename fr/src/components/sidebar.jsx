@@ -60,11 +60,10 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
           { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-500' },
           { id: 'clubs', label: 'Clubs', icon: Building2, color: 'text-green-500' },
           { id: 'events', label: 'Events', icon: Calendar, color: 'text-orange-500' },
-          { id: 'all-clubs', label: 'All Clubs', icon: Eye, color: 'text-purple-500' },
           { id: 'settings', label: 'Settings', icon: Settings, color: 'text-gray-500' },
         ];
         if (isLeader) {
-          menu.splice(4, 0,
+          menu.splice(3, 0,
             { id: 'leadership', label: 'Leadership', icon: Crown, color: 'text-yellow-500' },
             { id: 'manage-join-requests', label: 'Join Requests', icon: UserPlus, color: 'text-pink-500' }
           );

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom'; // Add this import
-import Sidebar from '../components/sidebar.jsx';
+import Sidebar from '../components/Sidebar.jsx';
 import Createclub from '../components/createclub.jsx';
 import ManageClubs from '../components/Manageclubs.jsx'; 
 import Manageusers from '../components/Manageusers.jsx';
 import Leadership from '../components/student/Leadership.jsx';
+import Clubs from '../components/student/clubs.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,7 +17,7 @@ const Dashboard = () => {
   const [clubsError, setClubsError] = useState(null);
   const [usersError, setUsersError] = useState(null);
 
-  const location = useLocation(); // Get current route location
+  const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -97,6 +98,15 @@ const Dashboard = () => {
           />
         );
       }
+      case 'clubs':
+        return (
+          <Clubs
+            clubs={clubs}
+            loading={clubsLoading}
+            error={clubsError}
+            setClubs={setClubs}
+          />
+        );
       default:
         return (
           <div className="flex flex-col items-center justify-center w-full h-full">
