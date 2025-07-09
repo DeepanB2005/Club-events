@@ -45,4 +45,32 @@ router.get('/club/:clubId', async (req, res) => {
   }
 });
 
+// Update an event
+router.patch('/:eventId', async (req, res) => {
+  try {
+    const { title, description, date, time, price, profilePhoto, club } = req.body;
+    const updateFields = {};
+    if (title !== undefined) updateFields.title = title;
+    if (description !== undefined) updateFields.description = description;
+    if (date !== undefined) updateFields.date = date;
+    if (time !== undefined) updateFields.time = time;
+    if (price !== undefined) updateFields.price = price;
+    if (profilePhoto !== undefined) updateFields.profilePhoto = profilePhoto;
+    if (club !== undefined) updateFields.club = club;
+
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.eventId,
+      { $set: updateFields },
+      { new: true }
+    ).populate('club');
+
+    if (!updatedEvent) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    res.json({ message: 'Event updated', event: updatedEvent });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
