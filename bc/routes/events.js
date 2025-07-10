@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
       title,
       description,
       date,
-      time, // Now this will be saved
+      time,
       price,
       profilePhoto,
       club
