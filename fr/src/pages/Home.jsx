@@ -1,6 +1,6 @@
-import Navbar from "../components/navbar";
-import Hero from "../components/hero";
-import Activities from "../components/activities";  
+import Navbar from "../components/home/navbar";
+import Hero from "../components/home/hero";
+import Activities from "../components/home/activities";  
 function Home() {
     return (
         <div className="text-white font-ft bg-gradient-to-r from-blue-200 to-purple-100 dark:bg-gradient-to-r dark:from-black dark:via-yellow-900 dark:to-black">

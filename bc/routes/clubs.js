@@ -157,7 +157,7 @@ router.put('/:id', async (req, res) => {
     const { name, description, leader, profilePhoto } = req.body;
     const clubId = req.params.id.trim();
 
-    // Find the club first
+    
     const club = await Club.findById(clubId);
     if (!club) {
       return res.status(404).json({ error: 'Club not found' });
@@ -209,7 +209,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Alternative: PATCH route for partial updates
+
 router.patch('/:id', async (req, res) => {
   try {
     const clubId = req.params.id.trim();
@@ -260,4 +260,19 @@ router.patch('/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Club join request (student requests to join, leader receives request)
+router.post('/:id/join-request', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const clubId = req.params.id.trim();
+    // You should implement a ClubRequest model or add a requests array to Club
+    // For demo, just respond OK
+    // Save the request in DB for leader to review later
+    res.json({ message: 'Join request sent to club leader!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

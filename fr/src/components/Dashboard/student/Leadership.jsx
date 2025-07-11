@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Edit3, Users, Crown, Save, X, Upload, UserMinus, CalendarDays, Trash2 } from "lucide-react";
+import { Crown, Edit3, X } from "lucide-react";
+import ManageMembers from "./ManageMembers";
+import ManageEvents from "./ManageEvents";
 
 const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
-  const [editClub, setEditClub] = useState(null);
-  const [form, setForm] = useState({});
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
-  const [deletingMember, setDeletingMember] = useState(null);
-
-  // Events management state
-  const [clubEvents, setClubEvents] = useState([]);
-  const [eventsLoading, setEventsLoading] = useState(true);
+  const [editClubId, setEditClubId] = useState(null);
+  const [clubForm, setClubForm] = useState({});
+  const [savingClub, setSavingClub] = useState(false);
   const [editEventId, setEditEventId] = useState(null);
   const [eventForm, setEventForm] = useState({});
   const [eventSaving, setEventSaving] = useState(false);
+  const [clubEvents, setClubEvents] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+  const [deletingMember, setDeletingMember] = useState(null);
+  const [error, setError] = useState(null);
+  const [activeSection, setActiveSection] = useState({}); // { [clubId]: 'members' | 'events' | null }
 
   // Only show clubs where user is leader
   const leaderClubs = useMemo(
@@ -23,12 +24,10 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
     [clubs, user?._id]
   );
 
-  // Fetch all events for leader's clubs
   useEffect(() => {
     const fetchEvents = async () => {
       setEventsLoading(true);
       try {
-        console.log("Fetching events for clubs:", leaderClubs.map(c => c._id));
         const allEvents = [];
         for (const club of leaderClubs) {
           const res = await fetch(`http://localhost:5000/api/events/club/${club._id}`);
@@ -47,45 +46,48 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
     else setClubEvents([]);
   }, [leaderClubs]);
 
-  const handleInputChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  const handlePhotoChange = e => {
+  // --- Club Edit Handlers ---
+  const startEditClub = (club) => {
+    setEditClubId(club._id);
+    setClubForm({
+      name: club.name,
+      description: club.description,
+      profilePhoto: club.profilePhoto || "",
+    });
+    setError(null);
+  };
+  const cancelEditClub = () => {
+    setEditClubId(null);
+    setClubForm({});
+    setError(null);
+  };
+  const handleClubInput = e => setClubForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const handleClubPhoto = e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => setForm(f => ({ ...f, profilePhoto: reader.result }));
+    reader.onloadend = () => setClubForm(f => ({ ...f, profilePhoto: reader.result }));
     reader.readAsDataURL(file);
   };
-  const startEdit = club => { setEditClub(club._id); setForm({ name: club.name, description: club.description, profilePhoto: club.profilePhoto }); setError(null); };
-  const cancelEdit = () => { setEditClub(null); setForm({}); setError(null); };
-  const saveClub = async clubId => {
-    setSaving(true); setError(null);
+  const saveClub = async (clubId) => {
+    setSavingClub(true);
     try {
-      console.log(`Saving club ${clubId} with data:`, form);
       const res = await fetch(`http://localhost:5000/api/clubs/${clubId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(clubForm),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Update failed");
-      setClubs(prev => prev.map(c => (c._id === clubId ? data.club : c)));
-      setEditClub(null); setForm({});
-    } catch (err) { setError(err.message); }
-    setSaving(false);
-  };
-  const deleteMember = async (clubId, memberId) => {
-    setDeletingMember(memberId);
-    try {
-      console.log(`Deleting member ${memberId} from club ${clubId}`);
-      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}/members/${memberId}`, { method: "DELETE" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Delete failed");
-      setClubs(prev => prev.map(c => c._id === clubId ? { ...c, members: c.members.filter(m => m._id !== memberId) } : c));
-    } catch (err) { setError(err.message); }
-    setDeletingMember(null);
+      setEditClubId(null);
+      setClubForm({});
+    } catch (err) {
+      setError(err.message);
+    }
+    setSavingClub(false);
   };
 
-  // --- Manage Events Section ---
+  // --- Manage Events Section Handlers ---
   const startEditEvent = (event) => {
     setEditEventId(event._id);
     setEventForm({
@@ -152,7 +154,17 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
     setEventSaving(false);
   };
 
-  // --- End Manage Events Section ---
+  const deleteMember = async (clubId, memberId) => {
+    setDeletingMember(memberId);
+    try {
+      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}/members/${memberId}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Delete failed");
+    } catch (err) {
+      setError(err.message);
+    }
+    setDeletingMember(null);
+  };
 
   if (clubsLoading)
     return (
@@ -176,9 +188,9 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
     );
 
   return (
-    <div className="min-h-screen  py-6">
-      <div className="max-w-7xl mx-auto px-32">
-        <div className="text-center mb-5">
+    <div className="min-h-screen py-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-32">
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="h-10 w-10 text-purple-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -187,137 +199,158 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
           </div>
           <p className="text-gray-600 text-lg">Manage your clubs and members with ease</p>
         </div>
-        {error && (
-          <div className="mb-8 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
-            <X className="h-5 w-5 text-red-500" />
-            <span className="text-red-700 font-medium">{error}</span>
-          </div>
-        )}
         <div className="space-y-8">
           {leaderClubs.map(club => (
-            <div key={club._id} className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
-              {/* ...existing club management code... */}
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white font-ft">
-                <div className="flex items-center justify-between">
+            <div key={club._id} className=" mb-10">
+              {/* Section Toggle Buttons */}
+              <div className="flex gap-4 px-8 pt-6">
+                <button
+                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] !== 'events' && activeSection?.[club._id] !== 'members' ? 'bg-blue-100 text-blue-700' : 'bg-white text-gray-700 border border-blue-200'}`}
+                  onClick={() => setActiveSection(s => ({ ...s, [club._id]: 'members' }))}
+                >
+                  Manage Members
+                </button>
+                <button
+                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] === 'events' ? 'bg-green-100 text-green-700' : 'bg-white text-gray-700 border border-green-200'}`}
+                  onClick={() => setActiveSection(s => ({ ...s, [club._id]: 'events' }))}
+                >
+                  Manage Events
+                </button>
+              </div>
+              {editClubId === club._id ? (
+                <form
+                  className="p-8 flex flex-col gap-6"
+                  onSubmit={e => {
+                    e.preventDefault();
+                    saveClub(club._id);
+                  }}
+                >
                   <div className="flex items-center gap-4">
-                    {club.profilePhoto ? (
-                      <img src={club.profilePhoto} alt={club.name}
-                        className="w-20 h-20 object-cover rounded-full border-4 border-white shadow-lg" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleClubPhoto}
+                      className="mb-2"
+                    />
+                    {clubForm.profilePhoto ? (
+                      <img src={clubForm.profilePhoto} alt="Club" className="w-20 h-20 object-cover rounded-full border-4 border-purple-200" />
                     ) : (
-                      <div className="w-20 h-20 flex items-center justify-center rounded-full bg-white/20 text-3xl font-bold border-4 border-white">
-                        {club.name?.charAt(0) || "?"}
+                      <div className="w-20 h-20 flex items-center justify-center rounded-full bg-purple-100 text-3xl font-bold border-4 border-purple-200">
+                        {clubForm.name?.charAt(0) || club.name?.charAt(0) || "?"}
                       </div>
                     )}
-                    <div>
-                      <h2 className="text-3xl bg-gradient-to-b from-yellow-300  to-green-200 text-transparent bg-clip-text font-bold mb-2">{club.name}</h2>
-                      <p className="text-purple-100 text-lg">{club.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Crown className="h-4 w-4" />
-                        <span className="text-sm">Led by {club.leader?.username || club.leader?.email}</span>
+                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={clubForm.name || ""}
+                    onChange={handleClubInput}
+                    placeholder="Club Name"
+                    className="px-3 py-2 rounded-lg border border-purple-200"
+                    required
+                  />
+                  <textarea
+                    name="description"
+                    value={clubForm.description || ""}
+                    onChange={handleClubInput}
+                    placeholder="Description"
+                    className="px-3 py-2 rounded-lg border border-purple-200"
+                    rows={3}
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600"
+                      disabled={savingClub}
+                    >
+                      {savingClub ? "Saving..." : "Save"}
+                    </button>
+                    <button
+                      type="button"
+                      className="px-6 py-2 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500"
+                      onClick={cancelEditClub}
+                      disabled={savingClub}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                
+                (!activeSection[club._id] || activeSection[club._id] === null) && (
+                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white font-ft flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      {club.profilePhoto ? (
+                        <img src={club.profilePhoto} alt={club.name}
+                          className="w-20 h-20 object-cover rounded-full border-4 border-white shadow-lg" />
+                      ) : (
+                        <div className="w-20 h-20 flex items-center justify-center rounded-full bg-white/20 text-3xl font-bold border-4 border-white">
+                          {club.name?.charAt(0) || "?"}
+                        </div>
+                      )}
+                      <div>
+                        <h2 className="text-3xl bg-gradient-to-b from-yellow-300 to-green-200 text-transparent bg-clip-text font-bold mb-2">{club.name}</h2>
+                        <p className="text-purple-100 text-lg">{club.description}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Crown className="h-4 w-4" />
+                          <span className="text-sm">Led by {club.leader?.username || club.leader?.email}</span>
+                        </div>
                       </div>
                     </div>
+                    <button
+                      className="flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-semibold transition-colors"
+                      onClick={() => startEditClub(club)}
+                    >
+                      <Edit3 className="h-4 w-4" />Edit Club
+                    </button>
                   </div>
-                  <button className="flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-semibold transition-colors"
-                    onClick={() => startEdit(club)}>
-                    <Edit3 className="h-4 w-4" />Edit Club
-                  </button>
-                </div>
-              </div>
-              {/* ...members management code... */}
+                )
+              )}
               <div className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <Users className="h-6 w-6 text-blue-600" />
-                  <h3 className="text-2xl font-bold text-gray-800">Manage Members</h3>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-                    {club.members?.length || 0} members
-                  </span>
-                </div>
-                {/* ...members list code... */}
-              </div>
-              {/* --- Manage Events Section --- */}
-              <div className="px-8 pb-8">
-                <div className="flex items-center gap-3 mb-6 mt-8">
-                  <CalendarDays className="h-6 w-6 text-green-600" />
-                  <h3 className="text-2xl font-bold text-gray-800">Manage Events</h3>
-                </div>
-                {eventsLoading ? (
-                  <div className="text-lg text-gray-500">Loading events...</div>
-                ) : (
-                  <div className="grid gap-6">
-                    {clubEvents.filter(ev => ev.club?._id === club._id).length === 0 ? (
-                      <div className="text-gray-400 italic">No events for this club.</div>
-                    ) : (
-                      clubEvents.filter(ev => ev.club?._id === club._id).map(event => (
-                        <div key={event._id} className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl shadow flex flex-col md:flex-row items-center gap-6 p-6 border border-green-200">
-                          {editEventId === event._id ? (
-                            <form className="flex-1 flex flex-col md:flex-row gap-6 items-center" onSubmit={e => { e.preventDefault(); saveEvent(event._id, club._id); }}>
-                              <div className="flex flex-col items-center">
-                                <input type="file" accept="image/*" onChange={handleEventPhoto} className="mb-2" />
-                                {eventForm.profilePhoto ? (
-                                  <img src={eventForm.profilePhoto} alt="Event" className="w-20 h-20 object-cover rounded-full border-4 border-green-200" />
-                                ) : (
-                                  <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-200 to-green-200 text-2xl text-white font-bold border-4 border-green-200">
-                                    {eventForm.title?.charAt(0) || "?"}
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" name="title" value={eventForm.title || ""} onChange={handleEventInput} placeholder="Event Name" className="px-3 py-2 rounded-lg border border-blue-200" required />
-                                <input type="date" name="date" value={eventForm.date || ""} onChange={handleEventInput} className="px-3 py-2 rounded-lg border border-blue-200" required />
-                                <input type="time" name="time" value={eventForm.time || ""} onChange={handleEventInput} className="px-3 py-2 rounded-lg border border-blue-200" />
-                                <input type="number" name="price" value={eventForm.price || ""} onChange={handleEventInput} placeholder="Price" className="px-3 py-2 rounded-lg border border-blue-200" min="0" />
-                                <textarea name="description" value={eventForm.description || ""} onChange={handleEventInput} placeholder="Description" className="px-3 py-2 rounded-lg border border-blue-200 col-span-2" rows={2} />
-                              </div>
-                              <div className="flex flex-col gap-2">
-                                <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600" disabled={eventSaving}>
-                                  {eventSaving ? "Saving..." : "Save"}
-                                </button>
-                                <button type="button" className="px-4 py-2 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500" onClick={cancelEditEvent} disabled={eventSaving}>
-                                  Cancel
-                                </button>
-                              </div>
-                            </form>
-                          ) : (
-                            <div className="flex-1 flex flex-col md:flex-row items-center gap-6">
-                              {event.profilePhoto ? (
-                                <img src={event.profilePhoto} alt={event.title} className="w-20 h-20 object-cover rounded-full border-4 border-green-200" />
-                              ) : (
-                                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-200 to-green-200 text-2xl text-white font-bold border-4 border-green-200">
-                                  {event.title?.charAt(0) || "?"}
-                                </div>
-                              )}
-                              <div className="flex-1">
-                                <h4 className="text-xl font-bold text-green-700">{event.title}</h4>
-                                <div className="text-gray-600 mb-1">{event.description}</div>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                                  <span>
-                                    <span className="font-semibold text-blue-600">Date:</span>{" "}
-                                    {event.date ? new Date(event.date).toLocaleString() : "N/A"}
-                                  </span>
-                                  {event.price && (
-                                    <span>
-                                      <span className="font-semibold text-yellow-600">Price:</span> ₹{event.price}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="flex flex-col gap-2">
-                                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600" onClick={() => startEditEvent(event)}>
-                                  Edit
-                                </button>
-                                <button className="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 flex items-center gap-1" onClick={() => deleteEvent(event._id)} disabled={eventSaving}>
-                                  <Trash2 className="h-4 w-4" /> Delete
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))
-                    )}
+                {activeSection[club._id] === "events" && (
+                  <div>
+                    <button
+                      className="mb-4 flex items-center gap-2 text-gray-500 hover:text-red-600 font-bold"
+                      onClick={() => setActiveSection(s => ({ ...s, [club._id]: null }))}
+                      aria-label="Close"
+                    >
+                      <X className="w-5 h-5" /> Close
+                    </button>
+                    <ManageEvents
+                      leaderClubs={[club]}
+                      clubEvents={clubEvents}
+                      eventsLoading={eventsLoading}
+                      editEventId={editEventId}
+                      eventForm={eventForm}
+                      eventSaving={eventSaving}
+                      startEditEvent={startEditEvent}
+                      cancelEditEvent={cancelEditEvent}
+                      handleEventInput={handleEventInput}
+                      handleEventPhoto={handleEventPhoto}
+                      saveEvent={saveEvent}
+                      deleteEvent={deleteEvent}
+                      error={error}
+                    />
+                  </div>
+                )}
+                {activeSection[club._id] === "members" && (
+                  <div>
+                    <button
+                      className="mb-4 flex items-center gap-2 text-gray-500 hover:text-red-600 font-bold"
+                      onClick={() => setActiveSection(s => ({ ...s, [club._id]: null }))}
+                      aria-label="Close"
+                    >
+                      <X className="w-5 h-5" /> Close
+                    </button>
+                    <ManageMembers
+                      leaderClubs={[club]}
+                      deletingMember={deletingMember}
+                      deleteMember={deleteMember}
+                      error={error}
+                    />
                   </div>
                 )}
               </div>
-              {/* --- End Manage Events Section --- */}
             </div>
           ))}
         </div>

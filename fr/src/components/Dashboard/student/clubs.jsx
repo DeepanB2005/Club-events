@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp }) {
+function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user }) {
   const [clubs, setClubs] = useState(clubsProp || []);
   const [loading, setLoading] = useState(loadingProp ?? true);
   const [error, setError] = useState(errorProp || null);
   const [selectedClub, setSelectedClub] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
+  const [joinStatus, setJoinStatus] = useState({}); // { [clubId]: 'pending' | 'joined' | 'error' | null }
+  const [requestMessage, setRequestMessage] = useState('');
 
   useEffect(() => {
     if (clubsProp) setClubs(clubsProp);
@@ -19,6 +21,36 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp }) {
       .then(data => setAllUsers(data))
       .catch(() => setAllUsers([]));
   }, []);
+
+  // Send join request to club leader
+  const handleJoinClub = async (club) => {
+    if (!user) {
+      setJoinStatus(s => ({ ...s, [club._id]: 'error' }));
+      setRequestMessage('You must be logged in to join a club.');
+      return;
+    }
+    setJoinStatus(s => ({ ...s, [club._id]: 'pending' }));
+    setRequestMessage('');
+    try {
+      // Send a join request to the backend (you need to implement this endpoint)
+      const res = await fetch(`http://localhost:5000/api/clubs/${club._id}/join-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user._id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setJoinStatus(s => ({ ...s, [club._id]: 'error' }));
+        setRequestMessage(data.error || 'Failed to send join request.');
+      } else {
+        setJoinStatus(s => ({ ...s, [club._id]: 'requested' }));
+        setRequestMessage('Join request sent to club leader!');
+      }
+    } catch (err) {
+      setJoinStatus(s => ({ ...s, [club._id]: 'error' }));
+      setRequestMessage('Failed to send join request.');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center font-ft p-6 bg-gradient-to-br from-blue-200 via-pink-200 to-yellow-200">
@@ -63,6 +95,26 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp }) {
                   </span>
                 </div>
               )}
+              <button
+                className="mt-2 px-6 py-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white rounded-xl font-bold shadow-lg hover:from-pink-400 hover:to-blue-400 transition-all"
+                onClick={e => {
+                  e.stopPropagation();
+                  handleJoinClub(club);
+                }}
+                disabled={joinStatus[club._id] === 'requested' || joinStatus[club._id] === 'pending'}
+              >
+                {joinStatus[club._id] === 'requested'
+                  ? "Request Sent"
+                  : joinStatus[club._id] === 'pending'
+                  ? "Requesting..."
+                  : "Join Club"}
+              </button>
+              {joinStatus[club._id] === 'error' && (
+                <div className="text-red-500 text-xs mt-2">{requestMessage}</div>
+              )}
+              {joinStatus[club._id] === 'requested' && (
+                <div className="text-green-600 text-xs mt-2">{requestMessage}</div>
+              )}
               <button className="mt-2 px-6 py-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white rounded-xl font-bold shadow-lg hover:from-pink-400 hover:to-blue-400 transition-all">
                 View Details
               </button>
@@ -103,7 +155,23 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp }) {
                 <span className="font-bold text-blue-400">|</span>
                 <span className="font-bold text-purple-500">Active Members:</span> {selectedClub.members?.length || 0}
               </div>
-              
+              <button
+                className="mt-2 px-6 py-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white rounded-xl font-bold shadow-lg hover:from-pink-400 hover:to-blue-400 transition-all"
+                onClick={() => handleJoinClub(selectedClub)}
+                disabled={joinStatus[selectedClub._id] === 'requested' || joinStatus[selectedClub._id] === 'pending'}
+              >
+                {joinStatus[selectedClub._id] === 'requested'
+                  ? "Request Sent"
+                  : joinStatus[selectedClub._id] === 'pending'
+                  ? "Requesting..."
+                  : "Join Club"}
+              </button>
+              {joinStatus[selectedClub._id] === 'error' && (
+                <div className="text-red-500 text-xs mt-2">{requestMessage}</div>
+              )}
+              {joinStatus[selectedClub._id] === 'requested' && (
+                <div className="text-green-600 text-xs mt-2">{requestMessage}</div>
+              )}
             </div>
           </div>
         </div>

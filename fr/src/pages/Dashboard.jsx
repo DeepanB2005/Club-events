@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.jsx';
-import Createclub from '../components/createclub.jsx';
-import ManageClubs from '../components/Manageclubs.jsx'; 
-import Manageusers from '../components/Manageusers.jsx';
-import Leadership from '../components/student/Leadership.jsx';
-import Clubs from '../components/student/clubs.jsx';
-import Events from '../components/student/Events.jsx';
+import Sidebar from '../components/Dashboard/Sidebar.jsx';
+import Createclub from '../components/Dashboard/createclub.jsx';
+import ManageClubs from '../components/Dashboard/Manageclubs.jsx'; 
+import Manageusers from '../components/Dashboard/Manageusers.jsx';
+import Leadership from '../components/Dashboard/student/Leadership.jsx';
+import Clubs from '../components/Dashboard/student/clubs.jsx';
+import Events from '../components/Dashboard/student/Events.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
