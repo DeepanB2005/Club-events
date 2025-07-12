@@ -108,7 +108,7 @@ function Events({ user, clubs = [], clubsLoading = false }) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br">
       <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-green-400 bg-clip-text text-transparent">
         Events
       </h1>
@@ -243,7 +243,7 @@ function Events({ user, clubs = [], clubsLoading = false }) {
         </div>
       )}
 
-      {/* Stylish Events List */}
+
       <div className="w-full max-w-6xl mt-8">
         <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">All Events</h2>
         {eventsLoading ? (

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user }) {
+  console.log('User in Clubs:', user); // Add this line
+
   const [clubs, setClubs] = useState(clubsProp || []);
   const [loading, setLoading] = useState(loadingProp ?? true);
   const [error, setError] = useState(errorProp || null);
   const [selectedClub, setSelectedClub] = useState(null);
-  const [allUsers, setAllUsers] = useState([]);
   const [joinStatus, setJoinStatus] = useState({}); // { [clubId]: 'pending' | 'joined' | 'error' | null }
   const [requestMessage, setRequestMessage] = useState('');
 
@@ -15,14 +16,6 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user 
     if (errorProp) setError(errorProp);
   }, [clubsProp, loadingProp, errorProp]);
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/users')
-      .then(res => res.json())
-      .then(data => setAllUsers(data))
-      .catch(() => setAllUsers([]));
-  }, []);
-
-  // Send join request to club leader
   const handleJoinClub = async (club) => {
     if (!user) {
       setJoinStatus(s => ({ ...s, [club._id]: 'error' }));
@@ -32,7 +25,6 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user 
     setJoinStatus(s => ({ ...s, [club._id]: 'pending' }));
     setRequestMessage('');
     try {
-      // Send a join request to the backend (you need to implement this endpoint)
       const res = await fetch(`http://localhost:5000/api/clubs/${club._id}/join-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -95,26 +87,7 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user 
                   </span>
                 </div>
               )}
-              <button
-                className="mt-2 px-6 py-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white rounded-xl font-bold shadow-lg hover:from-pink-400 hover:to-blue-400 transition-all"
-                onClick={e => {
-                  e.stopPropagation();
-                  handleJoinClub(club);
-                }}
-                disabled={joinStatus[club._id] === 'requested' || joinStatus[club._id] === 'pending'}
-              >
-                {joinStatus[club._id] === 'requested'
-                  ? "Request Sent"
-                  : joinStatus[club._id] === 'pending'
-                  ? "Requesting..."
-                  : "Join Club"}
-              </button>
-              {joinStatus[club._id] === 'error' && (
-                <div className="text-red-500 text-xs mt-2">{requestMessage}</div>
-              )}
-              {joinStatus[club._id] === 'requested' && (
-                <div className="text-green-600 text-xs mt-2">{requestMessage}</div>
-              )}
+              
               <button className="mt-2 px-6 py-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white rounded-xl font-bold shadow-lg hover:from-pink-400 hover:to-blue-400 transition-all">
                 View Details
               </button>

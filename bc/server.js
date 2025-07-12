@@ -4,6 +4,7 @@ const userRoutes = require('./routes/users');
 const clubRoutes = require('./routes/clubs');
 const cors = require('cors');
 const eventRoutes = require('./routes/events');
+const joinRequestsRouter = require('./routes/joinRequests');
 
 connectDB();
 
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/clubs', clubRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/join-requests', joinRequestsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
@@ -40,6 +42,6 @@ app.listen(port,(e)=>{
     else
     {    
     console.log();
-    console.log(`vanakkam da mapla ☄️❤️‍🔥🧩http://localhost:${port}`);
+    console.log(`server url ☄️❤️‍🔥🧩http://localhost:${port}`);
     }
 })

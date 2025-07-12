@@ -202,16 +202,15 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
         <div className="space-y-8">
           {leaderClubs.map(club => (
             <div key={club._id} className=" mb-10">
-              {/* Section Toggle Buttons */}
               <div className="flex gap-4 px-8 pt-6">
                 <button
-                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] !== 'events' && activeSection?.[club._id] !== 'members' ? 'bg-blue-100 text-blue-700' : 'bg-white text-gray-700 border border-blue-200'}`}
+                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] !== 'events' && activeSection?.[club._id] !== 'members' ? 'bg-gradient-to-r from-green-200 to-yellow-100 text-blue-700' : 'bg-white text-gray-700 border border-blue-200'}`}
                   onClick={() => setActiveSection(s => ({ ...s, [club._id]: 'members' }))}
                 >
                   Manage Members
                 </button>
                 <button
-                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] === 'events' ? 'bg-green-100 text-green-700' : 'bg-white text-gray-700 border border-green-200'}`}
+                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] === 'events' ? 'bg-green-100 text-green-700' : 'bg-gradient-to-r from-green-200 to-yellow-100 text-gray-700 border border-green-200'}`}
                   onClick={() => setActiveSection(s => ({ ...s, [club._id]: 'events' }))}
                 >
                   Manage Events
@@ -278,7 +277,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
               ) : (
                 
                 (!activeSection[club._id] || activeSection[club._id] === null) && (
-                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white font-ft flex items-center justify-between">
+                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 rounded-3xl shadow-lg shadow-gray-500 text-white font-ft flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       {club.profilePhoto ? (
                         <img src={club.profilePhoto} alt={club.name}

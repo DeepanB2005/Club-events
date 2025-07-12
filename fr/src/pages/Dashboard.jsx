@@ -7,6 +7,7 @@ import Manageusers from '../components/Dashboard/Manageusers.jsx';
 import Leadership from '../components/Dashboard/student/Leadership.jsx';
 import Clubs from '../components/Dashboard/student/clubs.jsx';
 import Events from '../components/Dashboard/student/Events.jsx';
+import ClubJoinRequests from '../components/Dashboard/student/ClubJoinRequests.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -117,15 +118,30 @@ const Dashboard = () => {
           />
         );
       }
-      case 'clubs':
+      case 'clubs': {
+        const storedUser = localStorage.getItem('user');
+        let loggedInUser = null;
+        if (storedUser) {
+          try {
+            loggedInUser = JSON.parse(storedUser);
+          } catch (e) {
+            loggedInUser = null;
+          }
+        }
         return (
           <Clubs
+            user={loggedInUser}
             clubs={clubs}
             loading={clubsLoading}
             error={clubsError}
             setClubs={setClubs}
           />
         );
+      }
+      case 'join-requests': {
+        const club = clubs[0];
+        return club ? <ClubJoinRequests clubId={club._id} /> : null;
+      }
       
       default:
         return (
