@@ -46,7 +46,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
     else setClubEvents([]);
   }, [leaderClubs]);
 
-  // --- Club Edit Handlers ---
+
   const startEditClub = (club) => {
     setEditClubId(club._id);
     setClubForm({
@@ -193,7 +193,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="h-10 w-10 text-purple-600" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-300 bg-clip-text text-transparent">
               Leadership Dashboard
             </h1>
           </div>
@@ -204,7 +204,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
             <div key={club._id} className=" mb-10">
               <div className="flex gap-4 px-8 pt-6">
                 <button
-                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow ${activeSection?.[club._id] !== 'events' && activeSection?.[club._id] !== 'members' ? 'bg-gradient-to-r from-green-200 to-yellow-100 text-blue-700' : 'bg-white text-gray-700 border border-blue-200'}`}
+                  className={`px-6 mb-5 py-2 rounded-xl font-bold shadow  ${activeSection?.[club._id] !== 'events' && activeSection?.[club._id] !== 'members' ? 'bg-gradient-to-r from-green-200 to-yellow-100 text-blue-700' : 'bg-white text-gray-700 border border-blue-200 dark:bg-purple-950 dark:text-yellow-300'}`}
                   onClick={() => setActiveSection(s => ({ ...s, [club._id]: 'members' }))}
                 >
                   Manage Members

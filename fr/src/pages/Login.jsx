@@ -17,7 +17,7 @@ function Login() {
   const [signupForm, setSignupForm] = useState({
     username: "",
     rollNo: "",
-    role: "student", // Default role
+    role: "student",
     email: "",
     password: "",
     gender: "",
