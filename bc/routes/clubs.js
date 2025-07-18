@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Club = require('../models/Club');
+const JoinRequest = require('../models/JoinRequest'); // Add this at the top
 
 // Get every club in db
 router.get('/', async (req, res) => {
@@ -266,10 +267,23 @@ router.post('/:id/join-request', async (req, res) => {
   try {
     const { userId } = req.body;
     const clubId = req.params.id.trim();
-    // You should implement a ClubRequest model or add a requests array to Club
-    // For demo, just respond OK
-    // Save the request in DB for leader to review later
-    res.json({ message: 'Join request sent to club leader!' });
+
+    const club = await Club.findById(clubId);
+    if (!club) return res.status(404).json({ error: 'Club not found' });
+
+    
+    const existing = await JoinRequest.findOne({ club: clubId, user: userId, status: 'pending' });
+    if (existing) return res.status(400).json({ error: 'Join request already sent.' });
+
+    
+    if (club.members.includes(userId)) {
+      return res.status(400).json({ error: 'You are already a member of this club.' });
+    }
+
+    const joinRequest = new JoinRequest({ club: clubId, user: userId });
+    await joinRequest.save();
+
+    res.status(201).json({ message: 'Join request sent to club leader!' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
