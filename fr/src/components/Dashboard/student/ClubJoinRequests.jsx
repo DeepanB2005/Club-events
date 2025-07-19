@@ -283,7 +283,7 @@ function ClubJoinRequests({ user }) {
               </div>
             </div>
 
-            {/* Requests List */}
+
             {requests.map(req => (
               <div key={req._id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="p-6">
@@ -291,14 +291,14 @@ function ClubJoinRequests({ user }) {
                     {/* User Information */}
                     <div className="flex-1">
                       <div className="flex items-start space-x-4">
-                        {/* Avatar */}
+
                         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                           <span className="text-white font-semibold text-lg">
                             {(req.user?.username || req.user?.email || 'U').charAt(0).toUpperCase()}
                           </span>
                         </div>
                         
-                        {/* User Details */}
+
                         <div className="flex-1 min-w-0">
                           <h3 className="text-lg font-semibold text-gray-900 mb-1">
                             {req.user?.username || 'Unknown User'}
@@ -329,7 +329,7 @@ function ClubJoinRequests({ user }) {
                             )}
                           </div>
                           
-                          {/* Club and Date Info */}
+
                           <div className="flex flex-wrap items-center gap-3">
                             <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                               {req.clubName}
@@ -342,9 +342,9 @@ function ClubJoinRequests({ user }) {
                       </div>
                     </div>
 
-                    {/* Status and Actions */}
+
                     <div className="flex flex-col items-end space-y-3">
-                      {/* Status Badge */}
+
                       <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${
                         req.status === 'pending' 
                           ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
@@ -358,7 +358,6 @@ function ClubJoinRequests({ user }) {
                         {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
                       </span>
 
-                      {/* Action Buttons */}
                       {req.status === 'pending' && (
                         <div className="flex gap-2">
                           <button

@@ -67,4 +67,29 @@ router.patch('/:requestId', async (req, res) => {
   }
 });
 
+router.get('/leader/:leaderId', async (req, res) => {
+  try {
+    // Find all clubs where this user is the leader
+    const clubs = await Club.find({ leader: req.params.leaderId }).select('_id name');
+    const clubIds = clubs.map(c => c._id);
+
+    // Find all join requests for these clubs
+    const requests = await JoinRequest.find({ club: { $in: clubIds } })
+      .populate('user', '-password')
+      .populate('club', 'name')
+      .sort({ createdAt: -1 });
+
+    // Attach club name to each request for frontend convenience
+    const requestsWithClubName = requests.map(req => ({
+      ...req.toObject(),
+      clubName: req.club?.name || '',
+      clubId: req.club?._id || '',
+    }));
+
+    res.json(requestsWithClubName);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
