@@ -161,10 +161,8 @@ function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-300 via-gray-100 to-gray-300 relative overflow-hidden flex items-center justify-center">
       <div className="flex flex-col lg:flex-row h-[90vh] w-full max-w-6xl z-10 shadow-lg rounded-2xl overflow-hidden">
-        {/* Left Side - Login/Signup Form */}
         <div className="w-full lg:w-1/2 flex flex-col px-2 sm:px-5 py-5 bg-white bg-opacity-90">
-          {/* Fixed Header Section */}
-          <div className="w-full max-w-md mx-auto mb-6">
+       <div className="w-full max-w-md mx-auto mb-6">
             <div className="text-center mb-4">
               <h1 className="text-4xl font-bold bg-gradient-to-b from-red-600 via-red-500 to-black bg-clip-text text-transparent">
                 WELCOME BACK
@@ -204,7 +202,6 @@ function Login() {
             </div>
           </div>
 
-          {/* Form Content Section */}
           <div className="flex- flex items-center justify-center">
             <div className="w-full max-w-md mt-0">
               <AnimatePresence mode="wait">
@@ -247,7 +244,6 @@ function Login() {
             </div>
           </div>
         </div>
-        {/* Right Side - Illustration */}
         <div className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-red-100"></div>
           <div className="absolute top-10 right-10 text-9xl font-black text-gray-200 opacity-20 select-none">

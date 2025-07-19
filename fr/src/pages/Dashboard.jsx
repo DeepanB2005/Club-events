@@ -25,6 +25,20 @@ const Dashboard = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  // Helper function to get current user
+  const getCurrentUser = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        return JSON.parse(storedUser);
+      } catch (e) {
+        console.error('Error parsing stored user:', e);
+        return null;
+      }
+    }
+    return null;
+  };
+
   useEffect(() => {
     // Fetch clubs
     setClubsLoading(true);
@@ -59,20 +73,14 @@ const Dashboard = () => {
   }, [location.pathname]);
 
   const renderContent = () => {
+    const currentUser = getCurrentUser();
+    const userObj = users.find(u => u._id === (currentUser && currentUser._id)) || currentUser;
+
     switch (activeMenu) {
       case 'create-clubs':
         return <Createclub />;
-      case 'events': {
-        const storedUser = localStorage.getItem('user');
-        let currentUser = null;
-        if (storedUser) {
-          try {
-            currentUser = JSON.parse(storedUser);
-          } catch (e) {
-            currentUser = null;
-          }
-        }
-        const userObj = users.find(u => u._id === (currentUser && currentUser._id));
+      
+      case 'events':
         return (
           <Events
             user={userObj}
@@ -80,7 +88,7 @@ const Dashboard = () => {
             clubsLoading={clubsLoading}
           />
         );
-      }
+      
       case 'manage-clubs':
         return (
           <ManageClubs
@@ -90,6 +98,7 @@ const Dashboard = () => {
             setClubs={setClubs}
           />
         );
+      
       case 'manage-users':
         return (
           <Manageusers
@@ -99,17 +108,8 @@ const Dashboard = () => {
             error={usersError || clubsError}
           />
         );
-      case 'leadership': {
-        const storedUser = localStorage.getItem('user');
-        let currentUser = null;
-        if (storedUser) {
-          try {
-            currentUser = JSON.parse(storedUser);
-          } catch (e) {
-            currentUser = null;
-          }
-        }
-        const userObj = users.find(u => u._id === (currentUser && currentUser._id));
+      
+      case 'leadership':
         return (
           <Leadership
             user={userObj}
@@ -117,44 +117,59 @@ const Dashboard = () => {
             clubsLoading={clubsLoading}
           />
         );
-      }
-      case 'clubs': {
-        const storedUser = localStorage.getItem('user');
-        let loggedInUser = null;
-        if (storedUser) {
-          try {
-            loggedInUser = JSON.parse(storedUser);
-          } catch (e) {
-            loggedInUser = null;
-          }
-        }
+      
+      case 'clubs':
         return (
           <Clubs
-            user={loggedInUser}
+            user={currentUser}
             clubs={clubs}
             loading={clubsLoading}
             error={clubsError}
             setClubs={setClubs}
           />
         );
-      }
-      case 'join-requests': {
-        const storedUser = localStorage.getItem('user');
-        let loggedInUser = null;
-        if (storedUser) {
-          try {
-            loggedInUser = JSON.parse(storedUser);
-          } catch (e) {
-            loggedInUser = null;
-          }
-        }
-        return <ClubJoinRequests user={loggedInUser} />;
-      }
       
+      // Fix: Handle both possible menu IDs for join requests
+      case 'manage-join-requests':
+      case 'join-requests':
+        return <ClubJoinRequests user={userObj} />;
+      
+      case 'dashboard':
       default:
         return (
-          <div className="flex flex-col items-center justify-center w-full h-full">
-            <h2 className="text-2xl font-bold">Welcome to the Dashboard</h2>
+          <div className="min-h-screen bg-gray-50 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  Welcome to Dashboard
+                </h1>
+                <p className="text-xl text-gray-600 mb-8">
+                  {currentUser ? `Hello, ${currentUser.username || currentUser.email}!` : 'Please log in to continue'}
+                </p>
+                
+                {/* Dashboard Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <div className="text-3xl font-bold text-blue-600">
+                      {clubsLoading ? '...' : clubs.length}
+                    </div>
+                    <div className="text-gray-600">Total Clubs</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <div className="text-3xl font-bold text-green-600">
+                      {usersLoading ? '...' : users.length}
+                    </div>
+                    <div className="text-gray-600">Total Users</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <div className="text-3xl font-bold text-purple-600">
+                      {clubsLoading ? '...' : clubs.reduce((sum, club) => sum + (club.members?.length || 0), 0)}
+                    </div>
+                    <div className="text-gray-600">Total Members</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
     }
@@ -168,16 +183,22 @@ const Dashboard = () => {
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
       />
+      
+      {/* Mobile menu button */}
       <button
         onClick={toggleSidebar}
-        className="h-10 w-10 lg:hidden text-white p-2 rounded-lg bg-gray-800 dark:hover:bg-gray-700"
-      >|||</button>
+        className="fixed top-4 left-4 z-30 lg:hidden bg-gray-800 text-white p-2 rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
+      >
+        ☰
+      </button>
+      
       <div className="flex-1 flex flex-col">
-        <div className="flex-1 overflow-auto">{renderContent()}</div>
+        <div className="flex-1 overflow-auto">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-
