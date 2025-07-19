@@ -289,4 +289,15 @@ router.post('/:id/join-request', async (req, res) => {
   }
 });
 
+router.get('/club/:clubId', async (req, res) => {
+  try {
+    const requests = await JoinRequest.find({ club: req.params.clubId })
+      .populate('user', '-password')
+      .sort({ createdAt: -1 });
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
