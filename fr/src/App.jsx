@@ -1,6 +1,6 @@
 // Example snippet for App.jsx
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/home.jsx';
+import Home from './pages/home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 
