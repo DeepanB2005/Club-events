@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Club = require('../models/Club');
-const JoinRequest = require('../models/JoinRequest'); // Add this at the top
+const JoinRequest = require('../models/JoinRequest');
 
 // Get every club in db
 router.get('/', async (req, res) => {
@@ -48,7 +48,6 @@ router.post('/:id/members', async (req, res) => {
       return res.status(400).json({ error: 'User ID is required' });
     }
 
-    // Example for all routes using req.params.id:
     const clubId = req.params.id.trim();
     const club = await Club.findById(clubId);
     if (!club) {
@@ -76,7 +75,6 @@ router.post('/:id/members', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Remove a member from a club
 router.delete('/:id/members/:userId', async (req, res) => {
@@ -109,7 +107,32 @@ router.delete('/:id/members/:userId', async (req, res) => {
   }
 });
 
-// Get a single club by ID - MOVED TO END
+// Club join request (student requests to join, leader receives request)
+router.post('/:id/join-request', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const clubId = req.params.id.trim();
+
+    const club = await Club.findById(clubId);
+    if (!club) return res.status(404).json({ error: 'Club not found' });
+
+    const existing = await JoinRequest.findOne({ club: clubId, user: userId, status: 'pending' });
+    if (existing) return res.status(400).json({ error: 'Join request already sent.' });
+
+    if (club.members.includes(userId)) {
+      return res.status(400).json({ error: 'You are already a member of this club.' });
+    }
+
+    const joinRequest = new JoinRequest({ club: clubId, user: userId });
+    await joinRequest.save();
+
+    res.status(201).json({ message: 'Join request sent to club leader!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get a single club by ID
 router.get('/:id', async (req, res) => {
   try {
     const club = await Club.findById(req.params.id)
@@ -151,14 +174,12 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-
-
+// Update a club (PUT - full update)
 router.put('/:id', async (req, res) => {
   try {
     const { name, description, leader, profilePhoto } = req.body;
     const clubId = req.params.id.trim();
 
-    
     const club = await Club.findById(clubId);
     if (!club) {
       return res.status(404).json({ error: 'Club not found' });
@@ -210,7 +231,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-
+// Update a club (PATCH - partial update)
 router.patch('/:id', async (req, res) => {
   try {
     const clubId = req.params.id.trim();
@@ -238,7 +259,6 @@ router.patch('/:id', async (req, res) => {
     )
     .populate('members')
     .populate('leader');
-    // Remove .populate('events') until Event model is created
 
     res.json({
       message: 'Club updated successfully',
@@ -258,44 +278,6 @@ router.patch('/:id', async (req, res) => {
       return res.status(400).json({ error: `${field} already exists` });
     }
 
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Club join request (student requests to join, leader receives request)
-router.post('/:id/join-request', async (req, res) => {
-  try {
-    const { userId } = req.body;
-    const clubId = req.params.id.trim();
-
-    const club = await Club.findById(clubId);
-    if (!club) return res.status(404).json({ error: 'Club not found' });
-
-    
-    const existing = await JoinRequest.findOne({ club: clubId, user: userId, status: 'pending' });
-    if (existing) return res.status(400).json({ error: 'Join request already sent.' });
-
-    
-    if (club.members.includes(userId)) {
-      return res.status(400).json({ error: 'You are already a member of this club.' });
-    }
-
-    const joinRequest = new JoinRequest({ club: clubId, user: userId });
-    await joinRequest.save();
-
-    res.status(201).json({ message: 'Join request sent to club leader!' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get('/club/:clubId', async (req, res) => {
-  try {
-    const requests = await JoinRequest.find({ club: req.params.clubId })
-      .populate('user', '-password')
-      .sort({ createdAt: -1 });
-    res.json(requests);
-  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

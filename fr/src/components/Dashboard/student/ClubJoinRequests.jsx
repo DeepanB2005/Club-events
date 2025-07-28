@@ -8,7 +8,6 @@ function ClubJoinRequests({ user }) {
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState({});
 
-  // Get user from localStorage if not passed as prop
   const getCurrentUser = () => {
     if (user && user._id) return user;
     
@@ -33,14 +32,43 @@ function ClubJoinRequests({ user }) {
       return;
     }
     
-    const fetchClubsAndRequests = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        console.log('Fetching clubs for user:', currentUser._id);
+        console.log('Fetching data for user:', currentUser._id);
         
-        // Fetch all clubs
+        try {
+          console.log('Attempting to fetch via leader route...');
+          const leaderResponse = await fetch(`http://localhost:5000/api/join-requests/leader/${currentUser._id}`);
+          
+          if (leaderResponse.ok) {
+            const leaderRequests = await leaderResponse.json();
+            console.log('Leader requests:', leaderRequests);
+            
+            if (leaderRequests.length > 0) {
+              setRequests(leaderRequests);
+              
+              // Extract unique clubs from the requests
+              const uniqueClubs = leaderRequests.reduce((acc, req) => {
+                if (req.club && !acc.find(c => c._id === req.club._id)) {
+                  acc.push(req.club);
+                }
+                return acc;
+              }, []);
+              
+              setClubs(uniqueClubs);
+              setLoading(false);
+              return;
+            }
+          }
+        } catch (leaderError) {
+          console.log('Leader route failed, trying individual club method:', leaderError);
+        }
+        
+        // Method 2: Fallback - Get clubs first, then requests for each club
+        console.log('Fetching clubs first...');
         const clubsResponse = await fetch('http://localhost:5000/api/clubs');
         if (!clubsResponse.ok) {
           throw new Error(`Failed to fetch clubs: ${clubsResponse.status}`);
@@ -52,7 +80,6 @@ function ClubJoinRequests({ user }) {
         // Filter clubs where current user is the leader
         const leaderClubs = clubsData.filter(club => {
           const leaderId = typeof club.leader === 'object' ? club.leader._id : club.leader;
-          console.log(`Checking club ${club.name}: leaderId=${leaderId}, currentUserId=${currentUser._id}`);
           return leaderId === currentUser._id;
         });
         
@@ -64,35 +91,34 @@ function ClubJoinRequests({ user }) {
           return;
         }
 
-        // Fetch join requests for all leader clubs
-        const requestPromises = leaderClubs.map(async (club) => {
+        // Fetch join requests for each club
+        const allRequests = [];
+        
+        for (const club of leaderClubs) {
           try {
             console.log(`Fetching requests for club: ${club._id}`);
             const response = await fetch(`http://localhost:5000/api/join-requests/club/${club._id}`);
             
-            if (!response.ok) {
+            if (response.ok) {
+              const clubRequests = await response.json();
+              console.log(`Requests for ${club.name}:`, clubRequests);
+              
+              // Add club information to each request
+              const requestsWithClubInfo = clubRequests.map(req => ({
+                ...req,
+                clubName: club.name,
+                clubId: club._id
+              }));
+              
+              allRequests.push(...requestsWithClubInfo);
+            } else {
               console.error(`Failed to fetch requests for club ${club.name}: ${response.status}`);
-              return [];
             }
-            
-            const data = await response.json();
-            console.log(`Requests for ${club.name}:`, data);
-            
-            // Add club information to each request
-            return data.map(req => ({
-              ...req,
-              clubName: club.name,
-              clubId: club._id
-            }));
           } catch (err) {
             console.error(`Error fetching requests for club ${club.name}:`, err);
-            return [];
           }
-        });
+        }
 
-        const results = await Promise.all(requestPromises);
-        const allRequests = results.flat();
-        
         // Sort by creation date (newest first)
         allRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         
@@ -100,14 +126,14 @@ function ClubJoinRequests({ user }) {
         setRequests(allRequests);
         
       } catch (err) {
-        console.error('Error in fetchClubsAndRequests:', err);
+        console.error('Error in fetchData:', err);
         setError(`Failed to load data: ${err.message}`);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchClubsAndRequests();
+    fetchData();
   }, [currentUser]);
 
   const handleAction = async (requestId, status, clubId) => {
@@ -139,12 +165,14 @@ function ClubJoinRequests({ user }) {
         )
       );
 
-      // You can add a toast notification here instead of alert
       console.log(`Request ${status} successfully!`);
       
     } catch (err) {
       console.error(`Error ${status}ing request:`, err);
       setError(`Failed to ${status} request: ${err.message}`);
+      
+      // Clear error after 5 seconds
+      setTimeout(() => setError(null), 5000);
     } finally {
       setActionLoading(prev => {
         const newState = { ...prev };
@@ -189,29 +217,6 @@ function ClubJoinRequests({ user }) {
     );
   }
 
-  // Show error state
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="max-w-md w-full mx-auto p-6">
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-              <XCircle className="w-8 h-8 text-red-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">Error Loading Data</h2>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Main render
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -234,6 +239,19 @@ function ClubJoinRequests({ user }) {
           )}
         </div>
 
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center">
+              <XCircle className="w-5 h-5 text-red-500 mr-3" />
+              <div>
+                <h3 className="text-sm font-medium text-red-800">Error</h3>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* No clubs managed */}
         {clubs.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
@@ -252,7 +270,7 @@ function ClubJoinRequests({ user }) {
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Join Requests</h3>
             <p className="text-gray-600 mb-4">
-              No pending requests found for your clubs.
+              No requests found for your clubs.
             </p>
             <div className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full">
               Managing {clubs.length} club{clubs.length !== 1 ? 's' : ''}: {clubs.map(c => c.name).join(', ')}
@@ -283,7 +301,7 @@ function ClubJoinRequests({ user }) {
               </div>
             </div>
 
-
+            {/* Requests List */}
             {requests.map(req => (
               <div key={req._id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="p-6">
@@ -291,54 +309,12 @@ function ClubJoinRequests({ user }) {
                     {/* User Information */}
                     <div className="flex-1">
                       <div className="flex items-start space-x-4">
-
+                        {/* Avatar */}
                         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-semibold text-lg">
-                            {(req.user?.username || req.user?.email || 'U').charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        
-
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                            {req.user?.username || 'Unknown User'}
-                          </h3>
-                          
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-3">
-                            <div className="flex items-center">
-                              <User className="w-4 h-4 mr-2 text-gray-400" />
-                              <span>Roll: {req.user?.rollNo || 'N/A'}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <Mail className="w-4 h-4 mr-2 text-gray-400" />
-                              <span className="truncate">{req.user?.email || 'N/A'}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <span className="w-4 h-4 mr-2 text-gray-400 text-center">🎓</span>
-                              <span>{req.user?.department || 'N/A'}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                              <span>Year {req.user?.year || 'N/A'}</span>
-                            </div>
-                            {req.user?.phoneNo && (
-                              <div className="flex items-center md:col-span-2">
-                                <Phone className="w-4 h-4 mr-2 text-gray-400" />
-                                <span>{req.user.phoneNo}</span>
-                              </div>
-                            )}
-                          </div>
-                          
-
-                          <div className="flex flex-wrap items-center gap-3">
-                            <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                              {req.clubName}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {new Date(req.createdAt).toLocaleDateString()} • {new Date(req.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </span>
-                          </div>
-                        </div>
+              <span className="text-white font-semibold text-lg">
+                {(req.user?.username || req.user?.email || 'U').charAt(0).toUpperCase()}
+              </span>
+            </div>
                       </div>
                     </div>
 
@@ -346,7 +322,7 @@ function ClubJoinRequests({ user }) {
                     <div className="flex flex-col items-end space-y-3">
 
                       <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${
-                        req.status === 'pending' 
+                        req.status === 'pending'
                           ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
                           : req.status === 'approved' 
                           ? 'bg-green-100 text-green-800 border border-green-200'
