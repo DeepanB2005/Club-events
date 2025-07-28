@@ -38,7 +38,7 @@ function Navbar() {
     }, []);
 
     const handleUserClick = () => {
-        navigate("/Dashboard"); // Change to your dashboard route
+        navigate("/Dashboard"); 
     };
 
     return (

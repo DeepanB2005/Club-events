@@ -10,7 +10,7 @@ function EventsShowcase() {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events`);
+        const response = await fetch(`https://club-events-1.onrender.com/api/events`);
         if (!response.ok) {
           throw new Error('Failed to fetch events');
         }
