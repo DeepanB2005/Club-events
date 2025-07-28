@@ -43,7 +43,7 @@ const Dashboard = () => {
   useEffect(() => {
     // Fetch clubs
     setClubsLoading(true);
-fetch(`${import.meta.env.VITE_API_URL}/api/clubs`)
+fetch(`https://club-events-1.onrender.com/api/clubs`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch clubs');
         return res.json();
@@ -58,7 +58,7 @@ fetch(`${import.meta.env.VITE_API_URL}/api/clubs`)
       });
 
     setUsersLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
+    fetch(`https://club-events-1.onrender.com/api/users`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch users');
         return res.json();
