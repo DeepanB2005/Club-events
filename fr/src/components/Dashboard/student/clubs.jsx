@@ -25,7 +25,7 @@ function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user 
     setJoinStatus(s => ({ ...s, [club._id]: 'pending' }));
     setRequestMessage('');
     try {
-      const res = await fetch(`http://localhost:5000/api/clubs/${club._id}/join-request`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs/${club._id}/join-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user._id }),

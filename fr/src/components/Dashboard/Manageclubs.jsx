@@ -15,7 +15,7 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
   }, [clubsProp, loadingProp, errorProp]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/users')
+    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
       .then(res => res.json())
       .then(data => setAllUsers(data))
       .catch(() => setAllUsers([]));
@@ -26,7 +26,7 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
 
     setDeleting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/clubs/${clubId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs/${clubId}`, {
         method: 'DELETE',
       });
 

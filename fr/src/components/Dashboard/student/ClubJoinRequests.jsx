@@ -41,7 +41,7 @@ function ClubJoinRequests({ user }) {
         
         try {
           console.log('Attempting to fetch via leader route...');
-          const leaderResponse = await fetch(`http://localhost:5000/api/join-requests/leader/${currentUser._id}`);
+          const leaderResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/join-requests/leader/${currentUser._id}`);
           
           if (leaderResponse.ok) {
             const leaderRequests = await leaderResponse.json();
@@ -69,7 +69,7 @@ function ClubJoinRequests({ user }) {
         
         // Method 2: Fallback - Get clubs first, then requests for each club
         console.log('Fetching clubs first...');
-        const clubsResponse = await fetch('http://localhost:5000/api/clubs');
+        const clubsResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs`);
         if (!clubsResponse.ok) {
           throw new Error(`Failed to fetch clubs: ${clubsResponse.status}`);
         }
@@ -97,7 +97,7 @@ function ClubJoinRequests({ user }) {
         for (const club of leaderClubs) {
           try {
             console.log(`Fetching requests for club: ${club._id}`);
-            const response = await fetch(`http://localhost:5000/api/join-requests/club/${club._id}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/join-requests/club/${club._id}`);
             
             if (response.ok) {
               const clubRequests = await response.json();
@@ -142,7 +142,7 @@ function ClubJoinRequests({ user }) {
     try {
       console.log(`Updating request ${requestId} to ${status}`);
       
-      const response = await fetch(`http://localhost:5000/api/join-requests/${requestId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/join-requests/${requestId}`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json' 

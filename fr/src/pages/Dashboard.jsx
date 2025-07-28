@@ -43,7 +43,7 @@ const Dashboard = () => {
   useEffect(() => {
     // Fetch clubs
     setClubsLoading(true);
-    fetch('http://localhost:5000/api/clubs')
+fetch(`${import.meta.env.VITE_API_URL}/api/clubs`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch clubs');
         return res.json();
@@ -58,7 +58,7 @@ const Dashboard = () => {
       });
 
     setUsersLoading(true);
-    fetch('http://localhost:5000/api/users')
+    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch users');
         return res.json();
@@ -139,8 +139,7 @@ const Dashboard = () => {
       case 'join-requests':
         return <ClubJoinRequests user={userObj} />;
       
-      case 'dashboard':
-      default:
+        default:
         return (
           <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

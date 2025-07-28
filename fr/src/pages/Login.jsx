@@ -62,7 +62,7 @@ function Login() {
     try {
       console.log("Sending login data:", loginForm);
       
-      const response = await fetch("http://127.0.0.1:5000/api/users/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/login`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -119,7 +119,7 @@ function Login() {
     try {
       console.log("Sending signup data:", signupForm);
       
-      const response = await fetch("http://127.0.0.1:5000/api/users", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

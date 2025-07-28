@@ -10,7 +10,7 @@ function ClubsShowcase() {
     const fetchClubs = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/clubs');
+        const response = await fetch(`https://club-events-1.onrender.com/api/clubs`);
         if (!response.ok) {
           throw new Error('Failed to fetch clubs');
         }

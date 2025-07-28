@@ -10,7 +10,7 @@ function EventsShowcase() {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/events');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events`);
         if (!response.ok) {
           throw new Error('Failed to fetch events');
         }

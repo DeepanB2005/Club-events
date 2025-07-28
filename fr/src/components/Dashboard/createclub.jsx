@@ -12,7 +12,7 @@ function Createclub() {
 
   // Fetch users inmount
   useEffect(() => {
-    fetch('http://localhost:5000/api/users')
+    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
@@ -54,7 +54,7 @@ function Createclub() {
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/clubs', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
