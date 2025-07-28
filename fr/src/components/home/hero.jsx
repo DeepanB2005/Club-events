@@ -8,14 +8,13 @@ function Hero() {
       const navigate = useNavigate();
   
       useEffect(() => {
-          //sae in local storage
           const storedUser = localStorage.getItem('user');
           if (storedUser) {
               setUser(JSON.parse(storedUser));
           }
       }, []);
   const handleUserClick = () => {
-        navigate("/Dashboard"); // Change to your dashboard route
+        navigate("/Dashboard"); 
     };
 
   return (

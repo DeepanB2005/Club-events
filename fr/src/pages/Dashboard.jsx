@@ -8,6 +8,7 @@ import Leadership from '../components/Dashboard/student/Leadership.jsx';
 import Clubs from '../components/Dashboard/student/clubs.jsx';
 import Events from '../components/Dashboard/student/Events.jsx';
 import ClubJoinRequests from '../components/Dashboard/student/ClubJoinRequests';
+import DashboardGreetings from '../components/Dashboard/dashboard.jsx';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -77,6 +78,10 @@ const Dashboard = () => {
     const userObj = users.find(u => u._id === (currentUser && currentUser._id)) || currentUser;
 
     switch (activeMenu) {
+
+      case 'dashboard':
+        return <DashboardGreetings/>
+
       case 'create-clubs':
         return <Createclub />;
       

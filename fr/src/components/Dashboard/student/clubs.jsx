@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function Clubs({ clubs: clubsProp, loading: loadingProp, error: errorProp, user }) {
-  console.log('User in Clubs:', user); // Add this line
+  console.log('User in Clubs:', user);
 
   const [clubs, setClubs] = useState(clubsProp || []);
   const [loading, setLoading] = useState(loadingProp ?? true);
