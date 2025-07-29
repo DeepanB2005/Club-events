@@ -12,7 +12,7 @@ const app = express();
 const port = 5000;
 
 app.use(cors({
-  origin: "https://club-events.vercel.app/",
+  origin: "https://club-events.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
