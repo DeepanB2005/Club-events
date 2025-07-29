@@ -10,9 +10,8 @@ function Createclub() {
   const [clubDescription, setClubDescription] = useState('');
   const [clubLeader, setClubLeader] = useState('');
 
-  // Fetch users inmount
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
+    fetch(`https://club-events-1.onrender.com/api/users`)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
@@ -54,7 +53,7 @@ function Createclub() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs`, {
+      const res = await fetch(`https://club-events-1.onrender.com/api/clubs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

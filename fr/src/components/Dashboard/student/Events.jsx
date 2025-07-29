@@ -30,7 +30,7 @@ function Events({ user, clubs = [], clubsLoading = false }) {
     const fetchEvents = async () => {
       setEventsLoading(true);
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`);
+        const res = await fetch(`https://club-events-1.onrender.com/api/events`);
         if (!res.ok) throw new Error("Failed to fetch events");
         const data = await res.json();
         setAllEvents(data);
@@ -83,7 +83,7 @@ function Events({ user, clubs = [], clubsLoading = false }) {
         club: form.club,
       };
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`, {
+      const res = await fetch(`https://club-events-1.onrender.com/api/events`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(eventBody),

@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      fetch(`http://127.0.0.1:5000/api/users?email=${encodeURIComponent(parsedUser.email)}`)
+      fetch(`https://club-events-1.onrender.com/api/users?email=${encodeURIComponent(parsedUser.email)}`)
         .then(res => res.json())
         .then(data => {
           let backendUser = Array.isArray(data)
@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen, toggleSidebar, activeMenu, setActiveMenu }) => {
   
   useEffect(() => {
     if (user && user._id) {
-      fetch('http://127.0.0.1:5000/api/clubs')
+      fetch('https://club-events-1.onrender.com/api/clubs')
         .then(res => res.json())
         .then(clubs => {
           const leadsAnyClub = clubs.some(club => club.leader && club.leader._id === user._id);

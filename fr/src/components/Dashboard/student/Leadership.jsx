@@ -30,7 +30,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
       try {
         const allEvents = [];
         for (const club of leaderClubs) {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events/club/${club._id}`);
+          const res = await fetch(`https://club-events-1.onrender.com/api/events/club/${club._id}`);
           if (res.ok) {
             const data = await res.json();
             allEvents.push(...data);
@@ -72,7 +72,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
   const saveClub = async (clubId) => {
     setSavingClub(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs/${clubId}`, {
+      const res = await fetch(`https://club-events-1.onrender.com/api/clubs/${clubId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clubForm),
@@ -118,7 +118,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
       if (eventForm.time) {
         eventDateTime = `${eventForm.date}T${eventForm.time}:00`;
       }
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`, {
+      const res = await fetch(`https://club-events-1.onrender.com/api/events/${eventId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -143,7 +143,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
   const deleteEvent = async (eventId) => {
     setEventSaving(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`, {
+      const res = await fetch(`https://club-events-1.onrender.com/api/events/${eventId}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Delete failed");
@@ -157,7 +157,7 @@ const Leadership = ({ user, clubs = [], clubsLoading = false }) => {
   const deleteMember = async (clubId, memberId) => {
     setDeletingMember(memberId);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs/${clubId}/members/${memberId}`, { method: "DELETE" });
+      const res = await fetch(`https://club-events-1.onrender.com/api/clubs/${clubId}/members/${memberId}`, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Delete failed");
     } catch (err) {

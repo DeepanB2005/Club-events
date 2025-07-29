@@ -134,7 +134,6 @@ fetch(`https://club-events-1.onrender.com/api/clubs`)
           />
         );
       
-      // Fix: Handle both possible menu IDs for join requests
       case 'manage-join-requests':
       case 'join-requests':
         return <ClubJoinRequests user={userObj} />;

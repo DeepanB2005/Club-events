@@ -15,7 +15,7 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
   }, [clubsProp, loadingProp, errorProp]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
+    fetch(`https://club-events-1.onrender.com/api/users`)
       .then(res => res.json())
       .then(data => setAllUsers(data))
       .catch(() => setAllUsers([]));
@@ -26,7 +26,7 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
 
     setDeleting(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/clubs/${clubId}`, {
+      const res = await fetch(`https://club-events-1.onrender.com/api/clubs/${clubId}`, {
         method: 'DELETE',
       });
 
@@ -58,7 +58,7 @@ const handleChangeLeader = async (clubId, newLeaderId) => {
   try {
     console.log('Changing leader for club:', clubId, 'to user:', newLeaderId); // Debug log
 
-    const url = `http://localhost:5000/api/clubs/${clubId}`;
+    const url = `https://club-events-1.onrender.com/api/clubs/${clubId}`;
     console.log('Making PATCH request to:', url); // Debug log
 
     const res = await fetch(url, { 
