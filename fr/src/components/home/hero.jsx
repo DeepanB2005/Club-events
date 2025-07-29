@@ -43,7 +43,7 @@ function Hero() {
           </a>
     </div>
     <div className="mt-[180px] ml-[100px] h-[450px] w-[450px] rounded-3xl p-8 shadow-2xl shadow-gray-500 flex-row" >
-      
+      <div className='bg-gradient-to-r from-purple-200 to-green-200 w-20 h-20 rounded-md animate-bounce'></div>
     </div>
     <div className="w-5 h-10 bg-gradient-to-t from-red-400 to-purple-300 absolute bottom-8 ml-[700px] animate-bounce rounded-3xl px-2 py-2"><p className="bg-lime-500 text-transparent">|</p></div>
     </div>
