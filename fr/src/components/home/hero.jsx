@@ -23,7 +23,7 @@ function Hero() {
       <h1
         className="text-[3rem] font-extrabold leading-[1.2] mb-6 bg-gradient-to-r from-[#4361ee] to-[#f72585] bg-clip-text text-transparent"
        >
-        Manage Your Clubs With Efficiency
+        Manage our Campus Clubs With Efficiency
       </h1>
       <p class="text-[17px] text-gray-500">ClubWeb is a comprehensive solution for managing memberships, events, finances, and communications - all in one powerful platform.</p>
         {user ? (
