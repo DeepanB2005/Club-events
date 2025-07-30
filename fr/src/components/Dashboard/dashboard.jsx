@@ -86,7 +86,6 @@ const DashboardGreetings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-200 to-blue-200 relative overflow-hidden">
-      {/* Animated Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-40 right-32 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl animate-bounce"></div>
@@ -94,7 +93,6 @@ const DashboardGreetings = () => {
       </div>
 
       <div className="relative z-10 p-8">
-        {/* Greeting Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sparkles className="w-12 h-12 text-yellow-400 animate-spin" />
@@ -116,7 +114,6 @@ const DashboardGreetings = () => {
           </p>
         </div>
 
-        {/* Key Features Section */}
         <div className="max-w-6xl mx-auto mb-12">
           <h2 className="text-4xl font-bold text-center text-purple-800 mb-10">Key Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -139,7 +136,6 @@ const DashboardGreetings = () => {
           </div>
         </div>
 
-        {/* Quotes Section */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/20 backdrop-blur-lg rounded-3xl p-10 border border-white/30 text-center">
             <h2 className="text-4xl font-bold text-purple-800 mb-8">Daily Inspiration</h2>

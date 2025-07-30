@@ -6,7 +6,7 @@ import EventsShowcase from "../components/home/events"
 function Home() {
   return (
          <div className="text-white font-ft bg-gradient-to-r from-blue-200 to-purple-100 dark:bg-gradient-to-r dark:from-black dark:via-yellow-900 dark:to-black">
-      <Navbar />
+              <Navbar />
       
       <div className="absolute top-72 left-10 w-3 h-3 bg-purple-400 dark:bg-purple-300 rounded-full animate-bounce opacity-60"></div>
       <div className="absolute top-40 right-20 w-20 h-20 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full animate-pulse opacity-30 shadow-lg"></div>

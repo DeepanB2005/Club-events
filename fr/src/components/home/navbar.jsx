@@ -10,7 +10,6 @@ function Navbar() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        //sae in local storage
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
@@ -25,10 +24,8 @@ function Navbar() {
                 return;
             }
             if (window.scrollY > lastScrollY.current) {
-                // Scrol down
                 setShowNavbar(false);
             } else {
-                // Scrollingto up
                 setShowNavbar(true);
             }
             lastScrollY.current = window.scrollY;
@@ -66,10 +63,10 @@ function Navbar() {
                         <h1 className="text-3xl font-bold bg-gradient-to-b from-red-500 to-black bg-clip-text text-transparent dark:from red-500 dark:to-white">ClubSync</h1>
                     </div>
                     <div className="hidden md:flex items-center space-x-20    ">
-                        <NavLink href="#" text="Features" />
-                        <NavLink href="#" text="Clubs" />
-                        <NavLink href="#" text="Events" />
-                        <NavLink href="#" text="About us" />
+                        <NavLink href="#features" text="Features" />
+                        <NavLink href="#clubs" text="Clubs" />
+                        <NavLink href="#events" text="Events" />
+                        <NavLink href="#aboutus" text="About us" />
                     </div>
                     <input type='text' placeholder='    search' className="bg-blue-50 text-pink-300 rounded-2xl shadow-sm px-4 py-1 border-2 border-red-300 hover:py-2 transition-all duration-300"></input>
                     {user ? (

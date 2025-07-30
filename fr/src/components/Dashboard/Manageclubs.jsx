@@ -6,7 +6,7 @@ function ManageClubs({ clubs: clubsProp, loading: loadingProp, error: errorProp,
   const [error, setError] = useState(errorProp || null);
   const [selectedClub, setSelectedClub] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const [allUsers, setAllUsers] = useState([]); // <-- Add this state
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
     if (clubsProp) setClubs(clubsProp);
