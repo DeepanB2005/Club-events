@@ -3,9 +3,11 @@ import Hero from "../components/home/hero";
 import Activities from "../components/home/activities";  
 import ClubsShowcase from "../components/home/clubs";
 import EventsShowcase from "../components/home/events"
+import Aniruth from "../components/bacAni"
 function Home() {
   return (
          <div className="text-white font-ft bg-gradient-to-r from-blue-200 to-purple-100 dark:bg-gradient-to-r dark:from-black dark:via-yellow-900 dark:to-black">
+              <Aniruth />
               <Navbar />
       
       <div className="absolute top-72 left-10 w-3 h-3 bg-purple-400 dark:bg-purple-300 rounded-full animate-bounce opacity-60"></div>
