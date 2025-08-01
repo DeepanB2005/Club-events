@@ -16,9 +16,15 @@ function Home() {
       <div className="absolute top-96 left-1/4 w-12 h-12 bg-gradient-to-r from-green-300 to-blue-300 rounded-full animate-spin opacity-30"></div>
       
       <Hero />
-      <Activities />
-      <ClubsShowcase />
-      <EventsShowcase />
+      <div id="Activities">
+        <Activities />
+      </div>
+      <div id="clubs">
+        <ClubsShowcase />
+      </div>
+      <div id="events">
+        <EventsShowcase />
+      </div>
       
       <footer className="bg-gray-900 text-white py-12 mt-16">
         <div className="container mx-auto px-4 text-center">

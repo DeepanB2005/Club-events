@@ -63,7 +63,7 @@ function Navbar() {
                         <h1 className="text-3xl font-bold bg-gradient-to-b from-red-500 to-black bg-clip-text text-transparent dark:from red-500 dark:to-white">ClubSync</h1>
                     </div>
                     <div className="hidden md:flex items-center space-x-20    ">
-                        <NavLink href="#features" text="Features" />
+                        <NavLink href="#Activities" text="Features" />
                         <NavLink href="#clubs" text="Clubs" />
                         <NavLink href="#events" text="Events" />
                         <NavLink href="#aboutus" text="About us" />
@@ -89,12 +89,19 @@ function Navbar() {
 }
 
 const NavLink = ({ href, text }) => (
-    <a
-        href={href}
-        className=" text-teal-500 -400 dark:text-gray-300 text-lg hover:text-green-500 transition duration-200 relative before:absolute before:left-0 before:-bottom-1 before:h-[2px] before:w-0 before:bg-current before:transition-all before:duration-300 hover:before:w-full"
-    >
-        {text}
-    </a>
+  <a
+    href={href}
+    onClick={e => {
+      e.preventDefault();
+      const el = document.getElementById(href.replace('#', ''));
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }}
+    className="text-teal-500 dark:text-gray-300 text-lg hover:text-green-500 transition duration-200 relative"
+  >
+    {text}
+  </a>
 );
 
 export default Navbar;
