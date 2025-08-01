@@ -94,7 +94,7 @@ function EventsShowcase() {
   };
 
   return (
-    <div className="py-16 px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="py-16 px-4">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <div className="text-center mb-16">
