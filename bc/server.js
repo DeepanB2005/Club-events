@@ -5,10 +5,13 @@ const clubRoutes = require('./routes/clubs');
 const cors = require('cors');
 const eventRoutes = require('./routes/events');
 const joinRequestsRouter = require('./routes/joinRequests');
+const { OAuth2Client } = require('google-auth-library');
+require('dotenv').config();
 
 connectDB();
 
-const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 const client = new OAuth2Client(CLIENT_ID);
 
 const app = express();
@@ -31,8 +34,11 @@ app.post('/api/auth/google', async (req, res) => {
       audience: CLIENT_ID
     });
     const payload = ticket.getPayload();
+    console.log('OAuth success:', payload.email, payload.name); // Log user info on success
+
     res.json({ user: payload });
   } catch (error) {
+    console.error('OAuth error:', error);
     res.status(401).json({ message: 'Invalid token' });
   }
 });

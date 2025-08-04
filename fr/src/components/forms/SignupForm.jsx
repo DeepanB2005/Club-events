@@ -1,6 +1,7 @@
 import React from "react";
 import { Eye, EyeOff } from "lucide-react";
 import GoogleOauth from "./googleOauth";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const SignupForm = ({
   signupForm,
@@ -166,7 +167,10 @@ const SignupForm = ({
     </form>
 
     <div className="my-4">
+        <GoogleOAuthProvider clientId="829753005073-l9kam0mc2v6io2p5gj0gpu0msoc9i3k2.apps.googleusercontent.com">
+
       <GoogleOauth onLogin={onGoogleAuth} />
+      </GoogleOAuthProvider>
     </div>
   </div>
 );
