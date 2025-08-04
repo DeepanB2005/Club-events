@@ -18,9 +18,25 @@ function Hero() {
         navigate("/Dashboard"); 
     };
 
+
+    const [mov,stemov]=useState({t:50,b:50});
+    useEffect(()=>
+    {
+      const mv=setInterval(()=>
+      {
+        stemov({t:Math.random()*90,b:Math.random()*90});
+      },800); 
+      return ()=>clearInterval(mv);
+    },[]);
+
+    const [a,seta]=useState(0);
+
   return (
     <div class="h-screen flex ">       
     <div className="hero ml-[200px] mt-60 max-md:ml-20 max-sm:ml-0 w-[600px]">
+      <div className='h-20 w-20 bg-gradient-to-r from-red-300 to-blue-300 rounded-full animate-float' sty>${a}</div>
+
+
       <h1
         className="text-[3rem] font-extrabold leading-[1.2] mb-6 bg-gradient-to-r from-[#4361ee] to-[#f72585] bg-clip-text text-transparent"
        >

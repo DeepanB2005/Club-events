@@ -53,7 +53,6 @@ function FeatureCard({ icon, title, description, color }) {
   );
 }
 
-// Activities Main Section
 function Activities() {
   const features = [
     {

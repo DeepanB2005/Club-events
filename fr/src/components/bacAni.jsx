@@ -49,7 +49,7 @@ function Aniruth() {
         const Icon = ICONS[i % ICONS.length];
         const size = getRandom(32, 64);
         const color = `hsl(${getRandom(180, 360)}, 70%, 80%)`;
-        return (
+        return (  
           <span
             key={i}
             ref={el => (iconRefs.current[i] = el)}

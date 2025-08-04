@@ -10,11 +10,6 @@ function Home() {
               <Aniruth />
               <Navbar />
       
-      <div className="absolute top-72 left-10 w-3 h-3 bg-purple-400 dark:bg-purple-300 rounded-full animate-bounce opacity-60"></div>
-      <div className="absolute top-40 right-20 w-20 h-20 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full animate-pulse opacity-30 shadow-lg"></div>
-      <div className="absolute bottom-60 right-10 w-16 h-16 bg-gradient-to-r from-pink-300 to-red-300 rounded-full animate-bounce opacity-40 shadow-lg"></div>
-      <div className="absolute top-96 left-1/4 w-12 h-12 bg-gradient-to-r from-green-300 to-blue-300 rounded-full animate-spin opacity-30"></div>
-      
       <Hero />
       <div id="Activities">
         <Activities />

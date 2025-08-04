@@ -8,6 +8,9 @@ const joinRequestsRouter = require('./routes/joinRequests');
 
 connectDB();
 
+const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+const client = new OAuth2Client(CLIENT_ID);
+
 const app = express();
 const port = 5000;
 
@@ -19,6 +22,20 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+
+app.post('/api/auth/google', async (req, res) => {
+  const { token } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+    res.json({ user: payload });
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+});
 
 //-----------------------------------------------
 app.get('/', (req, res) => {
