@@ -12,7 +12,7 @@ const DashboardGreetings = () => {
     else if (hour < 17) setGreeting('Good Afternoon');
     else setGreeting('Good Evening');
     
-    // Load initial quote
+
     fetchRandomQuote();
   }, []);
 

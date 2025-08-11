@@ -27,8 +27,7 @@ function Login() {
     phoneNo: ""
   });
 
-  const navigate = useNavigate(); // Add this line
-
+  const navigate = useNavigate(); 
   const handleLoginChange = (e) => {
     setLoginForm({
       ...loginForm,
@@ -85,8 +84,7 @@ function Login() {
       setLoginForm({ email: "", password: "" });
       setShowPassword(false);
 
-      // Redirect to home page
-      navigate("/"); // <--- Redirect after login
+      navigate("/");
     } catch (err) {
       console.error("Login error:", err);
       alert("Login failed: " + err.message);
@@ -96,20 +94,17 @@ function Login() {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     
-    // Basic form validation
     if (signupForm.password.length < 6) {
       alert("Password must be at least 6 characters long");
       return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(signupForm.email)) {
       alert("Please enter a valid email address");
       return;
     }
 
-    // Phone number validation (basic)
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(signupForm.phoneNo)) {
       alert("Please enter a valid 10-digit phone number");
@@ -149,8 +144,7 @@ function Login() {
       });
       setShowPassword(false);
 
-      // Redirect to home page
-      navigate("/"); // <--- Redirect after signup
+      navigate("/");
     } catch (err) {
       console.error("Signup error:", err);
       console.log("Signup error details:", { signupForm });
@@ -249,7 +243,7 @@ function Login() {
           <div className="absolute top-10 right-10 text-9xl font-black text-gray-200 opacity-20 select-none">
             Go
           </div>
-          <div class="w-20 h-20 bg-gradient-to-t from-red-400 to bg-purple-400 animate-spin "></div>
+          <div className="w-20 h-20 bg-gradient-to-t from-red-400 to bg-purple-400 animate-spin "></div>
 
           <div className="absolute top-1/2 left-10 space-y-4">
             <div className="w-60 h-60 bg-red-300 rounded opacity-60 animate-bounce"></div>
