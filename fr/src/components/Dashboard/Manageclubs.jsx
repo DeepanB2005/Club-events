@@ -76,9 +76,9 @@ const handleChangeLeader = async (clubId, newLeaderId) => {
     }
 
     const responseData = await res.json();
-    console.log('Success response:', responseData); // Debug log
+    console.log('Success response:', responseData);
 
-    // Update local state with the response data
+
     setClubs(prev =>
       prev.map(club =>
         club._id === clubId
@@ -105,7 +105,7 @@ const handleChangeLeader = async (clubId, newLeaderId) => {
 
     alert('Leader changed successfully!');
   } catch (err) {
-    console.error('Error changing leader:', err); // Debug log
+    console.error('Error changing leader:', err);
     alert('Error changing leader: ' + err.message);
   }
 };
@@ -181,7 +181,7 @@ const handleChangeLeader = async (clubId, newLeaderId) => {
                 <span>
                   <span className="font-bold text-green-500">Leader:</span> {selectedClub.leader?.username || selectedClub.leader?.email || selectedClub.leader?._id}
                 </span>
-                {/* Stylish Change Leader Dropdown */}
+
                 <div className="flex items-center gap-2">
                   <label htmlFor="change-leader" className="text-blue-500 font-semibold">Change Leader:</label>
                   <select
