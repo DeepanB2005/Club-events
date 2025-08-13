@@ -4,7 +4,6 @@ A full fledged MERN stack project of managing college clubs and events
 home page
 
 login page
-iam deepan b iam the founder of the club management system.
 register=> 
 user name ,email,pass,conform pass,gender,dob,year,department,phone no,
 login => 
