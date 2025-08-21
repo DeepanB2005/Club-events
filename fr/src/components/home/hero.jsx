@@ -34,7 +34,6 @@ function Hero() {
   return (
     <div class="h-screen flex ">       
     <div className="hero ml-[200px] mt-60 max-md:ml-20 max-sm:ml-0 w-[600px]">
-      <div className='h-20 w-20 bg-gradient-to-r from-red-300 to-blue-300 rounded-full animate-float' sty>${a}</div>
 
 
       <h1
