@@ -85,7 +85,7 @@ const DashboardGreetings = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-200 to-blue-200 relative overflow-hidden">
+    <div className="font-ft min-h-screen bg-gradient-to-br from-violet-100 via-red-200 to-blue-200 relative overflow-hidden dark:bg-gradient-to-t dark:from-gray-900 dark:via-yellow-700 dark:to-grey-900">
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-40 right-32 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl animate-bounce"></div>
@@ -115,12 +115,12 @@ const DashboardGreetings = () => {
         </div>
 
         <div className="max-w-6xl mx-auto mb-12">
-          <h2 className="text-4xl font-bold text-center text-purple-800 mb-10">Key Features</h2>
+          <h2 className="text-4xl font-bold text-center text-purple-600 mb-10">Key Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {keyFeatures.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border border-white/30 hover:bg-white/30 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                className="bg-white/20 backdrop-blur-lg rounded-xl p-8 border border-green-200 hover:bg-white/30 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               >
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                   {React.cloneElement(feature.icon, { className: "w-8 h-8 text-white" })}
